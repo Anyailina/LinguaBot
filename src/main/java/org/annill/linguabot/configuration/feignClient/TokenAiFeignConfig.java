@@ -1,21 +1,18 @@
 package org.annill.linguabot.configuration.feignClient;
 
 import feign.RequestInterceptor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@Setter
-public class AiTokenFeignConfig {
+
+public class TokenAiFeignConfig {
     @Value("${ai.clientSecret}")
     private String clientSecret;
     @Value("${ai.authData}")
     private String authData;
 
     @Bean
-    public RequestInterceptor tokenRequestInterceptor() {
+    public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             requestTemplate.header("Content-Type", "application/x-www-form-urlencoded");
             requestTemplate.header("Accept", "application/json");

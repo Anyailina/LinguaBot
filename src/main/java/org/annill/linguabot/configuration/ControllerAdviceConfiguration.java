@@ -17,7 +17,6 @@ public class ControllerAdviceConfiguration {
         this.exceptionDetails = exceptionDetails;
     }
 
-
     @ResponseBody
     @ExceptionHandler({InternalException.class})
     public ResponseEntity<?> handleEntityNotFoundException(InternalException exception) {

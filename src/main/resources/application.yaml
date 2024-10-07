@@ -29,7 +29,7 @@ spring:
             loggerLevel: full
 
           aiAuth:
-
+            loggerLevel: full
             url: https://ngw.devices.sberbank.ru:9443/api/v2/oauth
 
 
@@ -53,7 +53,6 @@ errorDetails:
     httpCode: 500
 
 ai:
-  url: 'https://ngw.devices.sberbank.ru:9443/api/v2/oauth'
   payload: 'scope=GIGACHAT_API_PERS'
   clientSecret: "1dd4675d-1f16-41a5-a711-f0b76a8676b6"
   authData: "MWRkNDY3NWQtMWYxNi00MWE1LWE3MTEtZjBiNzZhODY3NmI2OjY5MzUzNjZkLWVmYWEtNGY3OS1iOGFhLWEzN2UwYzBjZmU0Mg=="
