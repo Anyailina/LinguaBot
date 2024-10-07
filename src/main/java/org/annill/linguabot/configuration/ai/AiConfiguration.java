@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import javax.net.ssl.SSLContext;
@@ -25,17 +24,16 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 
 
-@ConfigurationProperties(prefix = "ai")
 @Component
 @Data
 public class AiConfiguration {
-    @Value("${url}")
+    @Value("${ai.url}")
     private String url;
-    @Value("${payload}")
+    @Value("${ai.payload}")
     private String payLoad;
-    @Value("${clientSecret}")
+    @Value("${ai.clientSecret}")
     private String clientSecret;
-    @Value("${authData}")
+    @Value("${ai.authData}")
     private String authData;
     private SSLContext sslContext;
 

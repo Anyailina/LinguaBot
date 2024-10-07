@@ -20,6 +20,18 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     url: ${spring.datasource.url}
+  cloud:
+    openfeign:
+      client:
+        config:
+          ai:
+            url: https://gigachat.devices.sberbank.ru/api/v1/chat/completions
+            loggerLevel: full
+
+          aiAuth:
+
+            url: https://ngw.devices.sberbank.ru:9443/api/v2/oauth
+
 
 
 errorDetails:
@@ -41,7 +53,8 @@ errorDetails:
     httpCode: 500
 
 ai:
-  url: "https://ngw.devices.sberbank.ru:9443/api/v2/oauth"
+  url: 'https://ngw.devices.sberbank.ru:9443/api/v2/oauth'
   payload: 'scope=GIGACHAT_API_PERS'
   clientSecret: "1dd4675d-1f16-41a5-a711-f0b76a8676b6"
   authData: "MWRkNDY3NWQtMWYxNi00MWE1LWE3MTEtZjBiNzZhODY3NmI2OjY5MzUzNjZkLWVmYWEtNGY3OS1iOGFhLWEzN2UwYzBjZmU0Mg=="
+
