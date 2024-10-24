@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "aiAuth", configuration = TokenAiFeignConfig.class)
 public interface ExternalTokenFeignClient {
 
-    @RequestLine("POST ")
+    @RequestLine("POST /api/v2/oauth")
     String getAccessToken(@RequestBody String payLoad);
 }

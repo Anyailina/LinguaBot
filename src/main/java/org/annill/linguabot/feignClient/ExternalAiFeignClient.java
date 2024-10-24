@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "ai", configuration = RequestFeignConfig.class)
 public interface ExternalAiFeignClient {
     @Headers("Authorization: Bearer {token}")
-    @RequestLine("POST ")
+    @RequestLine("POST /api/v1/chat/completions")
     String getAnswer(@RequestBody String request, @Param("token") String token);
 }

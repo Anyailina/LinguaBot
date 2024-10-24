@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
   liquibase:
@@ -25,12 +25,12 @@ spring:
       client:
         config:
           ai:
-            url: https://gigachat.devices.sberbank.ru/api/v1/chat/completions
+            url: https://gigachat.devices.sberbank.ru
             loggerLevel: full
 
           aiAuth:
             loggerLevel: full
-            url: https://ngw.devices.sberbank.ru:9443/api/v2/oauth
+            url: https://ngw.devices.sberbank.ru:9443
 
 
 
