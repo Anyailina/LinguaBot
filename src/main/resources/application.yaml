@@ -42,6 +42,11 @@ errorDetails:
 
 telegramBot:
   name:
-    "LinguaEnglishBot"
+    "EnglishBot"
   token:
-    "7515679107:AAGN1-u02eGwyoBlgmAxOmRF1eWHqOzpEPM"
+   "7989664027:AAGv-d359PGiELNZqBSJCRJTgc5KPALZR-c"
+
+
+message:
+  not-correct-command:
+    "Нет такой команды"

@@ -3,8 +3,10 @@ package org.annill.linguabot.controller;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.bots.TelegramWebhookBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @RestController
@@ -17,7 +19,8 @@ public class TelegramController extends TelegramWebhookBot {
     @PostMapping("/webhook")
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        return null;
+        System.out.println(update.getMessage().getText());
+       return null;
     }
 
     @Override

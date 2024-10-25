@@ -17,8 +17,4 @@ public class UserDto {
     private Long chatId;
     @JsonIgnore
     private List<Long> folderIds;
-
-    public UserDto(Long chatId) {
-        this.chatId = chatId;
-    }
 }
