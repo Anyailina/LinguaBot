@@ -1,4 +1,4 @@
-package org.annill.linguabot.parsing;
+package org.annill.gigachat.parsing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

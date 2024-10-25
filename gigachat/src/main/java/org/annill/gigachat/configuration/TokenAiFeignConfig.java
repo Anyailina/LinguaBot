@@ -1,9 +1,8 @@
-package org.annill.linguabot.configuration.feignClient;
+package org.annill.gigachat.configuration;
 
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
-
 
 public class TokenAiFeignConfig {
     @Value("${ai.clientSecret}")

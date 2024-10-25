@@ -1,6 +1,7 @@
 package org.annill.linguabot.service;
 
 
+import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.converter.FolderConverter;
 import org.annill.linguabot.dto.FolderDto;
 import org.annill.linguabot.entity.Folder;
@@ -12,16 +13,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FolderService {
     private final FolderRepository folderRepository;
     private final FolderConverter folderConverter;
     private final FolderWordRepository folderWordRepository;
-
-    public FolderService(FolderRepository folderRepository, FolderConverter folderConverter, FolderWordRepository folderWordRepository) {
-        this.folderRepository = folderRepository;
-        this.folderConverter = folderConverter;
-        this.folderWordRepository = folderWordRepository;
-    }
 
     public void addFolder(String name) {
         Folder folder = new Folder().setName(name);

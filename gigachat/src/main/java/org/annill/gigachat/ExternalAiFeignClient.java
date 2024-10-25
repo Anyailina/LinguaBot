@@ -1,9 +1,11 @@
-package org.annill.linguabot.feignClient;
+package org.annill.gigachat;
+
 
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
-import org.annill.linguabot.configuration.feignClient.RequestFeignConfig;
+import org.annill.gigachat.configuration.RequestFeignConfig;
+import org.annill.gigachat.dto.RequestAiDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -11,5 +13,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ExternalAiFeignClient {
     @Headers("Authorization: Bearer {token}")
     @RequestLine("POST /api/v1/chat/completions")
-    String getAnswer(@RequestBody String request, @Param("token") String token);
+    String getAnswer(@RequestBody RequestAiDto request, @Param("token") String token);
 }

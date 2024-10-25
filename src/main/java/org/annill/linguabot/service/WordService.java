@@ -1,5 +1,6 @@
 package org.annill.linguabot.service;
 
+import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.converter.WordConverter;
 import org.annill.linguabot.dto.WordDto;
 import org.annill.linguabot.entity.Folder;
@@ -16,18 +17,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class WordService {
     private final WordRepository wordRepository;
     private final WordConverter wordConverter;
     private final FolderRepository folderRepository;
     private final FolderWordRepository folderWordRepository;
-
-    public WordService(WordRepository wordRepository, WordConverter wordConverter, FolderRepository folderRepository, FolderWordRepository folderWordRepository) {
-        this.wordRepository = wordRepository;
-        this.wordConverter = wordConverter;
-        this.folderRepository = folderRepository;
-        this.folderWordRepository = folderWordRepository;
-    }
 
     public void addWord(WordDto wordDto, Long id) {
         Folder folder = folderRepository.findById(id).orElseThrow(IdNotCorrectException::new);

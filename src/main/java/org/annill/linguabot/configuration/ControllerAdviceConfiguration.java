@@ -1,21 +1,21 @@
 package org.annill.linguabot.configuration;
 
+import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.configuration.errors.ExceptionDetails;
 import org.annill.linguabot.enums.ExceptionEnum;
 import org.annill.linguabot.exception.InternalException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Optional;
 
+@ControllerAdvice
+@RequiredArgsConstructor
 public class ControllerAdviceConfiguration {
     private final ExceptionDetails exceptionDetails;
-
-    public ControllerAdviceConfiguration(ExceptionDetails exceptionDetails) {
-        this.exceptionDetails = exceptionDetails;
-    }
 
     @ResponseBody
     @ExceptionHandler({InternalException.class})
