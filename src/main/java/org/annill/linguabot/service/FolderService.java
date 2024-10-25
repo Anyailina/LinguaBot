@@ -3,36 +3,34 @@ package org.annill.linguabot.service;
 
 import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.converter.FolderConverter;
-import org.annill.linguabot.dto.FolderDto;
-import org.annill.linguabot.entity.Folder;
+import org.annill.linguabot.converter.UserConvertor;
+import org.annill.linguabot.model.dto.FolderDto;
+import org.annill.linguabot.model.dto.UserDto;
+import org.annill.linguabot.model.entity.Folder;
+import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.repository.FolderRepository;
-import org.annill.linguabot.repository.FolderWordRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FolderService {
     private final FolderRepository folderRepository;
     private final FolderConverter folderConverter;
-    private final FolderWordRepository folderWordRepository;
+    private final UserConvertor userConvertor;
 
-    public void addFolder(String name) {
-        Folder folder = new Folder().setName(name);
+    public void addFolder(String name, UserDto userDto) {
+        User user = userConvertor.convert(userDto);
+        Folder folder = new Folder(name, user);
         folderRepository.save(folder);
     }
 
+
     public void deleteFolder(Long id) {
         folderRepository.deleteById(id);
-        folderWordRepository.deleteByFolderId(id);
     }
 
-    public List<FolderDto> getFolders() {
-        List<Folder> folders = folderRepository.findAll();
-        return folders.stream()
-                .map(folderConverter::convert)
-                .collect(Collectors.toList());
+    public FolderDto getFolderByName(String name) {
+        Folder folder = folderRepository.getFolderByName(name);
+        return folderConverter.convert(folder);
     }
 }

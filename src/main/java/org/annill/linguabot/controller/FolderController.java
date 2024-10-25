@@ -1,37 +1,30 @@
 package org.annill.linguabot.controller;
 
 import jakarta.validation.Valid;
-import org.annill.linguabot.dto.FolderDto;
+import lombok.AllArgsConstructor;
+import org.annill.linguabot.model.dto.FolderDto;
+import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.service.FolderService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
 
-import java.util.List;
-
-@RestController
-@RequestMapping("/folder")
+@Controller
+@AllArgsConstructor
 public class FolderController {
     private final FolderService folderService;
+    private final UserController userController;
 
-    public FolderController(FolderService folderService) {
-        this.folderService = folderService;
+    public void addFolder(@Valid String name, Long userChatId) {
+        UserDto userDto = userController.getUserIdByChatId(userChatId);
+        folderService.addFolder(name, userDto);
     }
 
-    @CrossOrigin
-    @PostMapping("/{name}")
-    public void addFolder(@PathVariable String name) {
-        folderService.addFolder(name);
-    }
-
-    @DeleteMapping("/{id}")
-    @CrossOrigin
-    public void deleteFolder(@PathVariable @Valid Long id) {
+    public void deleteFolder(@Valid Long id) {
         folderService.deleteFolder(id);
     }
 
-    @GetMapping
-    @CrossOrigin
-    public List<FolderDto> getFolders() {
-        return folderService.getFolders();
+    public FolderDto getFolderByName(@Valid String name) {
+        return folderService.getFolderByName(name);
     }
+
 }
 

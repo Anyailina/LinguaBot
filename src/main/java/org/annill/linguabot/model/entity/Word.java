@@ -1,4 +1,4 @@
-package org.annill.linguabot.entity;
+package org.annill.linguabot.model.entity;
 
 
 import jakarta.persistence.*;
@@ -7,25 +7,26 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.HashSet;
-import java.util.Set;
-
 
 @Data
 @Table(name = "words")
 @Accessors(chain = true)
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Word {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String translation;
-    @ManyToMany
-    @JoinTable(name = "folder_Word",
-            joinColumns = @JoinColumn(name = "word_id"),
-            inverseJoinColumns = @JoinColumn(name = "folder_id"))
-    private Set<Folder> folders = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "folder_id")
+    private Folder folder;
+
+    public Word(String name, String translation, Folder folder) {
+        this.name = name;
+        this.translation = translation;
+        this.folder = folder;
+    }
 }

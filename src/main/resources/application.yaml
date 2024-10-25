@@ -39,3 +39,9 @@ errorDetails:
     code: "UNKNOWN ERROR"
     message: "The error is unknown."
     httpCode: 500
+
+telegramBot:
+  name:
+    "LinguaEnglishBot"
+  token:
+    "7515679107:AAGN1-u02eGwyoBlgmAxOmRF1eWHqOzpEPM"

@@ -1,4 +1,4 @@
-package org.annill.linguabot.configuration.webSecurityConfig;
+package org.annill.gigachat.configuration;
 
 import feign.Client;
 import feign.Contract;
