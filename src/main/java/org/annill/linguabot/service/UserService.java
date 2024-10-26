@@ -1,6 +1,7 @@
 package org.annill.linguabot.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.annill.linguabot.converter.UserConvertor;
 import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.model.entity.User;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
     private UserRepository userRepository;
     private UserConvertor userConvertor;
@@ -19,7 +21,9 @@ public class UserService {
     }
 
     public void addUser(Long chatId) {
-        User user = new User(chatId);
-        userRepository.save(user);
+        if (userRepository.getUserIdByChatId(chatId) == null) {
+            User user = new User(chatId);
+            userRepository.save(user);
+        }
     }
 }

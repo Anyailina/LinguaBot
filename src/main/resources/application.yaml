@@ -50,3 +50,9 @@ telegramBot:
 message:
   not-correct-command:
     "Нет такой команды"
+  name-folder:
+    "Напишите название папки"
+  added-folder:
+    "Папка добавлена"
+  default:
+    "Неизвестная команда"
