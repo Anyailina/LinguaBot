@@ -29,11 +29,6 @@ public class AiTokenService {
         String accessTokenJson = externalTokenApi.getAccessToken(payLoad);
         Token token = utils.getObjectMapper().readValue(accessTokenJson, Token.class);
         long ttl = token.getExpires();
-        Cache cache = cacheManager.getCache("ai-token");
-
-        if (cache != null) {
-            cache.put("token", token.getAccessToken());
-        }
 
         scheduleCacheEviction("ai-token", "token", ttl);
         return token.getAccessToken();

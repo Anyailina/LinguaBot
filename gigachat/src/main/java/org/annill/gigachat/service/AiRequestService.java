@@ -27,10 +27,10 @@ public class AiRequestService {
     public String getAnswer(String word) {
         String token = aiTokenService.getTokenService();
         String requestString = String.format(promptTranslate, word);
+
         List<MessageDto> messages = List.of(new MessageDto(requestString, Role.user));
         RequestAiDto requestAi = new RequestAiDto(Model.GigaChat, messages, false, 0);
-        System.out.println(utils.getObjectMapper().writeValueAsString(requestAi));
-        System.out.println(requestAi);
+
         String answerFromAi = externalAiApi.getAnswer(requestAi, token);
         ChatCompletion chatCompletion = utils.getObjectMapper().readValue(answerFromAi, ChatCompletion.class);
         ChatCompletion.Choice choice = chatCompletion.getChoices()
