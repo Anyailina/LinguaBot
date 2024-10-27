@@ -15,6 +15,5 @@ public class WordConverter {
 
     public Word convert(WordDto wordDto) {
         return new Word(wordDto.getId(), wordDto.getName(), wordDto.getTranslation(), folderConverter.convert(wordDto.getFolderDto()));
-
     }
 }

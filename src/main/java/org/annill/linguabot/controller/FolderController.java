@@ -13,17 +13,16 @@ public class FolderController {
     private final FolderService folderService;
     private final UserController userController;
 
-    public void addFolder(@Valid String name, Long userChatId) {
-        UserDto userDto = userController.getUserIdByChatId(userChatId);
-        folderService.addFolder(name, userDto);
+    public FolderDto addFolder(@Valid String name, Long userChatId) {
+         return folderService.addFolder(name, userChatId);
     }
 
     public void deleteFolder(@Valid Long id) {
         folderService.deleteFolder(id);
     }
 
-    public FolderDto getFolderByName(@Valid String name) {
-        return folderService.getFolderByName(name);
+    public FolderDto getFolderByName(@Valid String name, Long userId) {
+        return folderService.getFolderByName(name,userId);
     }
 
 }

@@ -1,7 +1,6 @@
 package org.annill.linguabot.service;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.controller.UserController;
 import org.annill.linguabot.fabricOfAction.ActionHandlerHelper;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,30 +13,20 @@ import java.util.Optional;
 @AllArgsConstructor
 public class TelegramService {
     private final ActionHandlerHelper actionHandlerHelper;
-    private final UserController userController;
-
 
     public SendMessage processUpdate(Update update) {
-        if (!update.hasMessage() || !update.getMessage().hasText()) {
-            return null;
+        if (update == null || !update.hasMessage() || !update.getMessage().hasText()) {
+            return new SendMessage();
         }
+
         Message message = update.getMessage();
         long userId = message.getChatId();
-        processUserId(message.getChatId());
 
         String answer = Optional.ofNullable(actionHandlerHelper.getCurrentProcess(userId))
-                .map(action -> {
-                    String result = action.process(message.getText(), userId);
-                    actionHandlerHelper.deleteCurrentProcess(userId);
-                    return result;
-                })
+                .map(action -> action.getActionState().process(message.getText(), userId, action.getAddState()))
                 .orElseGet(() -> actionHandlerHelper.process(message.getText(), userId));
-
 
         return new SendMessage(String.valueOf(userId), answer);
     }
 
-    public void processUserId(long userId) {
-        userController.addUser(userId);
-    }
 }

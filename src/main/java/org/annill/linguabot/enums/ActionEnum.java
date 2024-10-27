@@ -5,6 +5,7 @@ import java.util.HashMap;
 public enum ActionEnum {
     ADD_FOLDER("/add_folder"),
     ADD_WORD("/add_word"),
+    START("/start"),
     DEFAULT("Default");
 
     private final String commandText;
