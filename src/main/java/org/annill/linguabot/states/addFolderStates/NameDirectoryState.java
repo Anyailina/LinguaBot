@@ -38,5 +38,4 @@ public class NameDirectoryState implements IAdd {
     public String wrongAnswer() {
         return "";
     }
-
 }

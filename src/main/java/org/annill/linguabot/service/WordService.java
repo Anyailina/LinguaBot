@@ -11,6 +11,8 @@ import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.repository.WordRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class WordService {
@@ -22,7 +24,7 @@ public class WordService {
 
     public WordDto addWord(String folderName, String phrase, String translation,Long userId) {
         FolderDto folderDto = folderController.getFolderByName(folderName,userId);
-        if (folderDto != null) {
+        if (folderDto != null || getWord(folderName,phrase,userId) == null) {
             Folder folder = folderConverter.convert(folderDto);
             Word word = new Word(phrase, translation, folder);
             return wordConverter.convert(wordRepository.save(word));
@@ -37,5 +39,14 @@ public class WordService {
         return wordRepository.findByNameAndFolder(phrase, folder)
                 .map(wordConverter::convert)
                 .orElse(null);
+    }
+
+    public Boolean wordIsSame(String folderName, String word,String translation, Long userId) {
+        FolderDto folderDto = folderController.getFolderByName(folderName,userId);
+        Folder folder = folderConverter.convert(folderDto);
+
+        return wordRepository.findByNameAndFolder(word, folder)
+                .map(phrase -> phrase.getTranslation().equals(translation))
+                .orElse(false);
     }
 }

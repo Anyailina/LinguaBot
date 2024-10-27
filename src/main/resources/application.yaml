@@ -60,6 +60,8 @@ message:
     "Добро пожаловать"
   mistake:
     folder-exists:
-      "Папка существует"
+      "Папка уже существует"
     folder-not-exists:
       "Папки с таким названием нет"
+    translate-exists:
+      "Такой перевод уже есть"

@@ -1,6 +1,5 @@
 package org.annill.linguabot.states.impl;
 
-import org.annill.linguabot.enums.ExceptionEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.states.context.AddContext;
 

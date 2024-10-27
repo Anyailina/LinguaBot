@@ -17,4 +17,7 @@ public class WordController {
     public WordDto getWord(String folderName, String word, Long userId) {
         return wordService.getWord(folderName, word,userId);
     }
+    public Boolean wordIsSame(String folderName, String word, Long userId,String translation) {
+        return wordService.wordIsSame(folderName, word,translation,userId);
+    }
 }

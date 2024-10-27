@@ -2,7 +2,6 @@ package org.annill.linguabot.service;
 
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.controller.UserController;
 import org.annill.linguabot.converter.FolderConverter;
 import org.annill.linguabot.converter.UserConvertor;
@@ -11,12 +10,9 @@ import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.repository.FolderRepository;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor

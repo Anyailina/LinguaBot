@@ -2,10 +2,8 @@ package org.annill.linguabot.states.addWordStates;
 
 import lombok.AllArgsConstructor;
 import org.annill.linguabot.cashe.UserCacheData;
-import org.annill.linguabot.controller.FolderController;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
-import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.stereotype.Component;
@@ -35,6 +33,4 @@ public class GetFolderNameState implements IAdd {
     public String wrongAnswer() {
        return "";
     }
-
-
 }

@@ -8,6 +8,7 @@ import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class NameFolderState implements IAdd {
     private WordState wordState;
     private FolderController folderController;
+    @Value("${message.mistake.folder-not-exists}")
+    private String messageFolderNotExists;
 
     @Override
     public String getStatus() {
@@ -41,6 +44,6 @@ public class NameFolderState implements IAdd {
 
     @Override
     public String wrongAnswer() {
-        return "Папки с таким названием не существует";
+        return messageFolderNotExists;
     }
 }

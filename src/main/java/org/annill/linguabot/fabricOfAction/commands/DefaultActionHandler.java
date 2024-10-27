@@ -20,5 +20,4 @@ public class DefaultActionHandler implements ActionHandler {
     public String process(String text, long chatId, IAdd iAdd) {
         return messageUnknownCommand;
     }
-    
 }

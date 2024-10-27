@@ -3,7 +3,6 @@ package org.annill.linguabot.controller;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.annill.linguabot.model.dto.FolderDto;
-import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.service.FolderService;
 import org.springframework.stereotype.Controller;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 @AllArgsConstructor
 public class FolderController {
     private final FolderService folderService;
-    private final UserController userController;
 
     public FolderDto addFolder(@Valid String name, Long userChatId) {
          return folderService.addFolder(name, userChatId);
