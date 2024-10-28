@@ -5,9 +5,12 @@ import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.entity.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-    Optional<Word> findByNameAndFolder(String name, Folder folder);
+    Optional<List<Word>> findByNameAndFolder(String name, Folder folder);
+
+    Optional<Word> findFirstByNameAndFolder(String name, Folder folder);
 }

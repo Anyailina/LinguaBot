@@ -11,7 +11,9 @@ import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.repository.WordRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.Collections;
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -22,31 +24,38 @@ public class WordService {
     private final FolderController folderController;
 
 
-    public WordDto addWord(String folderName, String phrase, String translation,Long userId) {
-        FolderDto folderDto = folderController.getFolderByName(folderName,userId);
-        if (folderDto != null || getWord(folderName,phrase,userId) == null) {
-            Folder folder = folderConverter.convert(folderDto);
-            Word word = new Word(phrase, translation, folder);
-            return wordConverter.convert(wordRepository.save(word));
+    public WordDto addWord(String folderName, String phrase, String translation, Long userId) {
+        FolderDto folderDto = folderController.getFolderByName(folderName, userId);
+        if (folderDto == null) {
+            return null;
         }
-        return null;
+        Folder folder = folderConverter.convert(folderDto);
+        Word word = new Word(phrase, translation, folder);
+        return wordConverter.convert(wordRepository.save(word));
     }
 
-    public WordDto getWord(String folderName, String phrase,Long userId) {
-        FolderDto folderDto = folderController.getFolderByName(folderName,userId);
+    public List<WordDto> getWords(String folderName, String phrase, Long userId) {
+        FolderDto folderDto = folderController.getFolderByName(folderName, userId);
+        Folder folder = folderConverter.convert(folderDto);
+        List<WordDto> words = wordRepository.findByNameAndFolder(phrase, folder)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(word -> word.getFolder().equals(folder) && word.getName().equals(phrase))
+                .map(wordConverter::convert)
+                .toList();
+
+        return words;
+    }
+
+    public Boolean wordIsSame(String folderName, String phrase, String translation, Long userId) {
+        FolderDto folderDto = folderController.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
 
         return wordRepository.findByNameAndFolder(phrase, folder)
-                .map(wordConverter::convert)
-                .orElse(null);
-    }
-
-    public Boolean wordIsSame(String folderName, String word,String translation, Long userId) {
-        FolderDto folderDto = folderController.getFolderByName(folderName,userId);
-        Folder folder = folderConverter.convert(folderDto);
-
-        return wordRepository.findByNameAndFolder(word, folder)
-                .map(phrase -> phrase.getTranslation().equals(translation))
+                .map(wordsList -> wordsList.stream()
+                        .anyMatch(word -> word.getFolder().equals(folder) &&
+                                word.getName().equals(phrase) &&
+                                word.getTranslation().equals(translation)))
                 .orElse(false);
     }
 }

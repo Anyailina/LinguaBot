@@ -24,14 +24,15 @@ public class FolderService {
 
     @Modifying
     public FolderDto addFolder(String name, Long userChatId) {
-        if (getFolderByName(name,userChatId) == null) {
-            UserDto userDto = userController.getUserIdByChatId(userChatId);
-            User user = userConvertor.convert(userDto);
-            Folder folder = new Folder(name, user);
-            Folder savedFolder = folderRepository.save(folder);
-            return folderConverter.convert(savedFolder);
+        if (getFolderByName(name, userChatId) != null) {
+            return null;
         }
-        return null;
+
+        UserDto userDto = userController.getUserIdByChatId(userChatId);
+        User user = userConvertor.convert(userDto);
+        Folder folder = new Folder(name, user);
+        Folder savedFolder = folderRepository.save(folder);
+        return folderConverter.convert(savedFolder);
     }
 
 

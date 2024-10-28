@@ -1,7 +1,6 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.cashe.UserCacheData;
 import org.annill.linguabot.cashe.WordCash;
 import org.annill.linguabot.controller.WordController;
 import org.annill.linguabot.enums.AddWordStateEnum;
@@ -21,24 +20,18 @@ public class TranslateState implements IAdd {
 
     @Override
     public String getStatus() {
-        return AddWordStateEnum.TRANSLATE.getStatesName();
+        return AddWordStateEnum.TRANSLATION.getStatesName();
     }
 
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String phrase, long chatId) {
-        Cache cache = addContext.getCache();
-        WordCash wordCash = getWord(chatId, cache);
-        if (wordController.wordIsSame(wordCash.getFolderName(), wordCash.getWord(), chatId, phrase)) {
-            return ResultStatusEnum.MISTAKE;
-        }
         return ResultStatusEnum.RIGHT;
-
     }
 
     @Override
     public void nextState(AddContext addContext, String text, long chatId) {
         Cache cache = addContext.getCache();
-        WordCash wordCash = getWord(chatId, cache);
+        WordCash wordCash = addContext.getExistingUserCacheData(chatId).getWordCash();
         wordController.addWord(wordCash.getFolderName(), wordCash.getWord(), text, chatId);
         cache.evict(chatId);
     }
@@ -46,11 +39,5 @@ public class TranslateState implements IAdd {
     @Override
     public String wrongAnswer() {
         return messageTranslationExists;
-    }
-
-    private WordCash getWord(long chatId, Cache cache) {
-        Cache.ValueWrapper wrapper = cache.get(chatId);
-        UserCacheData userCacheData = (UserCacheData) wrapper.get();
-        return userCacheData.getWordCash();
     }
 }

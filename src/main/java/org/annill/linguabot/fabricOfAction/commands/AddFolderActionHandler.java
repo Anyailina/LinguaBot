@@ -1,13 +1,13 @@
 package org.annill.linguabot.fabricOfAction.commands;
 
 import org.annill.linguabot.enums.ActionEnum;
-import org.annill.linguabot.fabricOfAction.abs.BaseActionHandler;
+import org.annill.linguabot.fabricOfAction.abs.AddActionHandler;
 import org.annill.linguabot.states.addFolderStates.NameDirectoryState;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AddFolderActionHandler extends BaseActionHandler {
+public class AddFolderActionHandler extends AddActionHandler {
 
     public AddFolderActionHandler(CacheManager cacheManager, NameDirectoryState nameDirectoryState) {
         super(cacheManager, nameDirectoryState);

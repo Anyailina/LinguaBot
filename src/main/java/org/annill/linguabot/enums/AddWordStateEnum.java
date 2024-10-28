@@ -4,7 +4,8 @@ public enum AddWordStateEnum {
     GET_NAME_FOLDER("Напишите имя папки"),
     NAME_FOLDER("Напишите слово"),
     WORD("Напишите перевод"),
-    TRANSLATE("Слово добавлено");
+    SUGGEST_TRANSLATION("Слово добавлено"),
+    TRANSLATION("Слово добавлено");
 
     private final String stateName;
 

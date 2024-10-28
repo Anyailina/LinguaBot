@@ -12,5 +12,4 @@ public class WordCash {
     public WordCash(String folderName) {
         this.folderName = folderName;
     }
-
 }

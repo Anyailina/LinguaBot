@@ -28,5 +28,4 @@ public class TelegramService {
 
         return new SendMessage(String.valueOf(userId), answer);
     }
-
 }

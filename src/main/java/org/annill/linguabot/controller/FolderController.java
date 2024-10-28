@@ -22,6 +22,5 @@ public class FolderController {
     public FolderDto getFolderByName(@Valid String name, Long userId) {
         return folderService.getFolderByName(name,userId);
     }
-
 }
 

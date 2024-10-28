@@ -9,8 +9,8 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @Accessors(chain = true)
+@AllArgsConstructor
 public class FolderDto {
     private Long id;
     @NotEmpty

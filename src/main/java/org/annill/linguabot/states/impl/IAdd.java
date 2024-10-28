@@ -11,5 +11,4 @@ public interface IAdd {
     void nextState(AddContext addContext, String text, long chatId);
 
     String wrongAnswer();
-
 }

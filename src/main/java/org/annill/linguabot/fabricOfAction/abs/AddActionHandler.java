@@ -9,12 +9,12 @@ import org.springframework.cache.CacheManager;
 
 import java.util.Optional;
 
-public abstract class BaseActionHandler implements ActionHandler {
+public abstract class AddActionHandler implements ActionHandler {
     protected AddContext addContext;
     protected Cache cache;
     protected IAdd initialState;
 
-    public BaseActionHandler(CacheManager cacheManager, IAdd initialState) {
+    public AddActionHandler(CacheManager cacheManager, IAdd initialState) {
         this.cache = cacheManager.getCache("commands");
         this.addContext = new AddContext(initialState, this, cache);
         this.initialState = initialState;
@@ -30,7 +30,6 @@ public abstract class BaseActionHandler implements ActionHandler {
             currentIAdd.nextState(addContext, text, chatId);
             return currentIAdd.getStatus();
         }
-
         return currentIAdd.wrongAnswer();
     }
 }

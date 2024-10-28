@@ -25,5 +25,4 @@ public class StartCommand implements ActionHandler {
         userController.addUser(chatId);
         return messageStartReturn;
     }
-
 }
