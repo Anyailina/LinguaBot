@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -49,20 +51,19 @@ public class WordState implements IAdd {
     public void nextState(AddContext addContext, String text, long chatId) {
         UserCacheData userCacheData = addContext.getExistingUserCacheData(chatId);
         WordCash wordCash = createWordCash(userCacheData, text);
-        List<WordSuggestionDto> wordsSuggestionDto = wordSuggestionController.getWords(text);
-        List<WordDto> wordsDto = wordController.getWords(wordCash.getFolderName(), text, chatId);
+        List<WordSuggestionDto> wordsSuggestionDto = new ArrayList<>(wordSuggestionController.getWords(text));
+        List<WordDto> savedWordsDto = wordController.getWords(wordCash.getFolderName(), text, chatId);
 
-        List<WordSuggestionDto> commonWords = wordsSuggestionDto.stream()
-                .filter(suggestion -> wordsDto.stream()
-                        .anyMatch(word -> suggestion.getPhrase().equals(word.getName()) &&
-                                suggestion.getTranslation().equals(word.getTranslation()))
-                )
-                .toList();
+        List<WordSuggestionDto> savedWords = savedWordsDto.stream()
+                .map(element -> new WordSuggestionDto(element.getId(), element.getName(), element.getTranslation()))
+                .collect(Collectors.toCollection(ArrayList::new));
 
-        IAdd nextState = determineNextState(commonWords);
-        answer = generateAnswer(commonWords);
+        wordsSuggestionDto.removeAll(savedWords);
 
-        UserCacheData newUserCacheData = createUserCacheData(nextState, addContext, wordCash, commonWords);
+        IAdd nextState = determineNextState(wordsSuggestionDto);
+        answer = generateAnswer(wordsSuggestionDto);
+
+        UserCacheData newUserCacheData = createUserCacheData(nextState, addContext, wordCash, wordsSuggestionDto);
         updateContextAndCache(addContext, nextState, chatId, newUserCacheData);
     }
 

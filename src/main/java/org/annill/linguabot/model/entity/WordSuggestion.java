@@ -24,4 +24,5 @@ public class WordSuggestion {
         this.phrase = phrase;
         this.translation = translation;
     }
+
 }
