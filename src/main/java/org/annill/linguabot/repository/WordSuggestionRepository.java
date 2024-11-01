@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface WordSuggestionRepository extends JpaRepository<WordSuggestion, Long> {
 
-    Optional<List<WordSuggestion>> findByPhrase(String phrase);
+    List<WordSuggestion> findByPhrase(String phrase);
 
     Optional<WordSuggestion> findFirstByPhrase(String phrase);
 }

@@ -24,9 +24,11 @@ public class WordSuggestion {
     @Column(name = "update_at")
     private Date updateAt;
 
-    public WordSuggestion(String phrase, String translation) {
+    public WordSuggestion(String phrase, String translation, Date createdAt, Date updateAt) {
         this.phrase = phrase;
         this.translation = translation;
+        this.createdAt = createdAt;
+        this.updateAt = updateAt;
     }
 
     public WordSuggestion(Long id, String phrase, String translation) {

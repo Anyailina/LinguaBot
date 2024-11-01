@@ -18,8 +18,8 @@ import java.util.List;
 public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     @EqualsAndHashCode.Exclude
+    private Long id;
     private String name;
     @ManyToOne
     @JoinColumn(name = "user_id")

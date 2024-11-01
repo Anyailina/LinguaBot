@@ -10,7 +10,10 @@ import java.util.Optional;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-    Optional<List<Word>> findByNameAndFolder(String name, Folder folder);
+    List<Word> findByNameAndFolder(String name, Folder folder);
+
+    List<Word> findByNameAndTranslationAndFolder(String name, String translation, Folder folder);
+
 
     Optional<Word> findFirstByNameAndFolder(String name, Folder folder);
 }

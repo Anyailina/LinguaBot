@@ -18,6 +18,7 @@ public class TranslateState implements IAdd {
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
 
+
     @Override
     public String getStatus() {
         return AddWordStateEnum.TRANSLATION.getStatesName();
@@ -25,6 +26,10 @@ public class TranslateState implements IAdd {
 
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String phrase, long chatId) {
+        WordCache wordCache = addContext.getExistingUserCacheData(chatId).getWordCache();
+        if (wordService.wordIsSame(wordCache.getFolderName(), wordCache.getWord(), phrase, chatId)) {
+            return ResultStatusEnum.MISTAKE;
+        }
         return ResultStatusEnum.RIGHT;
     }
 
@@ -35,6 +40,7 @@ public class TranslateState implements IAdd {
         wordService.addWord(wordCache.getFolderName(), wordCache.getWord(), text, chatId);
         cache.evict(chatId);
     }
+
 
     @Override
     public String wrongAnswer() {

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -39,9 +38,7 @@ public class WordService {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
         List<WordDto> words = wordRepository.findByNameAndFolder(phrase, folder)
-                .orElse(Collections.emptyList())
                 .stream()
-                .filter(word -> word.getFolder().equals(folder) && word.getName().equals(phrase))
                 .map(wordConverter::convert)
                 .toList();
 
@@ -51,12 +48,8 @@ public class WordService {
     public Boolean wordIsSame(String folderName, String phrase, String translation, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
+        List<Word> words = wordRepository.findByNameAndTranslationAndFolder(phrase, translation, folder);
 
-        return wordRepository.findByNameAndFolder(phrase, folder)
-                .map(wordsList -> wordsList.stream()
-                        .anyMatch(word -> word.getFolder().equals(folder) &&
-                                word.getName().equals(phrase) &&
-                                word.getTranslation().equals(translation)))
-                .orElse(false);
+        return !words.isEmpty();
     }
 }

@@ -33,7 +33,7 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     private List<Folder> folderList;
 

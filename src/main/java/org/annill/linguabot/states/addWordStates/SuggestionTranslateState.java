@@ -43,8 +43,7 @@ public class SuggestionTranslateState implements IAdd {
             int numberOfSuggestion = Integer.parseInt(text);
 
             if (isInvalidSuggestionIndex(numberOfSuggestion, wordSuggestionDtoList.size())) {
-                answer = messageIncorrectNumber;
-                setWrongAnswer(answer);
+                setWrongAnswer(messageIncorrectNumber);
                 return ResultStatusEnum.MISTAKE;
             }
 
@@ -79,7 +78,7 @@ public class SuggestionTranslateState implements IAdd {
     }
 
     private boolean isNumeric(String text) {
-        return text != null && text.matches("\\d+");
+        return text != null && text.matches("-?\\d+");
     }
 
     private boolean isInvalidSuggestionIndex(int index, int size) {
