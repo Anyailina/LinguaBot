@@ -1,11 +1,11 @@
 package org.annill.linguabot.states.addWordStates;
 
-import lombok.AllArgsConstructor;
-import org.annill.linguabot.cashe.UserCacheData;
-import org.annill.linguabot.cashe.WordCash;
-import org.annill.linguabot.controller.FolderController;
+import lombok.RequiredArgsConstructor;
+import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
+import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,10 +13,10 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class NameFolderState implements IAdd {
-    private WordState wordState;
-    private FolderController folderController;
+    private final WordState wordState;
+    private final FolderService folderService;
     @Value("${message.mistake.folder-not-exists}")
     private String messageFolderNotExists;
 
@@ -28,7 +28,7 @@ public class NameFolderState implements IAdd {
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String text, long chatId) {
 
-        return folderController.getFolderByName(text,chatId) == null ?
+        return folderService.getFolderByName(text, chatId) == null ?
                 ResultStatusEnum.MISTAKE :
                 ResultStatusEnum.RIGHT;
     }
@@ -36,8 +36,8 @@ public class NameFolderState implements IAdd {
     @Override
     public void nextState(AddContext addContext, String text, long chatId) {
         Cache cache = addContext.getCache();
-        WordCash wordCash = new WordCash(text);
-        UserCacheData userCacheData = new UserCacheData(wordState, addContext.getActionHandler(), wordCash);
+        WordCache wordCache = new WordCache(text);
+        UserCacheData userCacheData = new UserCacheData(wordState, addContext.getActionHandler(), wordCache);
         cache.put(chatId, userCacheData);
         addContext.setIAdd(wordState);
     }

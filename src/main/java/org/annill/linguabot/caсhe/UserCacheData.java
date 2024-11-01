@@ -1,28 +1,31 @@
-package org.annill.linguabot.cashe;
+package org.annill.linguabot.caсhe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.annill.linguabot.fabricOfAction.impl.ActionHandler;
+import lombok.NoArgsConstructor;
+import org.annill.linguabot.actions.abs.impl.ActionHandler;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.states.impl.IAdd;
 
+import java.io.Serializable;
 import java.util.List;
 
 @AllArgsConstructor
 @Getter
-public class UserCacheData {
+@NoArgsConstructor
+public class UserCacheData implements Serializable {
     private IAdd addState;
     private ActionHandler actionState;
-    private WordCash wordCash;
+    private WordCache wordCache;
     private List<WordSuggestionDto> wordSuggestions;
 
-    public UserCacheData(IAdd addState, ActionHandler actionState, WordCash wordCash) {
+    public UserCacheData(IAdd addState, ActionHandler actionState, WordCache wordCache) {
         this.addState = addState;
         this.actionState = actionState;
-        this.wordCash = wordCash;
+        this.wordCache = wordCache;
     }
 
-    public UserCacheData(IAdd addState,ActionHandler actionState) {
+    public UserCacheData(IAdd addState, ActionHandler actionState) {
         this.actionState = actionState;
         this.addState = addState;
     }

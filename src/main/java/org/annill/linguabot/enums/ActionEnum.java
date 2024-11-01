@@ -1,5 +1,7 @@
 package org.annill.linguabot.enums;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 
 public enum ActionEnum {
@@ -8,17 +10,20 @@ public enum ActionEnum {
     START("/start"),
     DEFAULT("Default");
 
-    private final String commandText;
     private static HashMap<String, ActionEnum> map = new HashMap<>();
-
-    ActionEnum(String commandText) {
-        this.commandText = commandText;
-    }
 
     static {
         for (ActionEnum value : values()) {
             map.put(value.commandText, value);
         }
+    }
+
+    @Getter
+    private final String commandText;
+
+
+    ActionEnum(String commandText) {
+        this.commandText = commandText;
     }
 
     public static ActionEnum fromText(String value) {

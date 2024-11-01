@@ -1,10 +1,10 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.cashe.WordCash;
-import org.annill.linguabot.controller.WordController;
+import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
+import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class TranslateState implements IAdd {
-    private WordController wordController;
+    private WordService wordService;
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
 
@@ -31,8 +31,8 @@ public class TranslateState implements IAdd {
     @Override
     public void nextState(AddContext addContext, String text, long chatId) {
         Cache cache = addContext.getCache();
-        WordCash wordCash = addContext.getExistingUserCacheData(chatId).getWordCash();
-        wordController.addWord(wordCash.getFolderName(), wordCash.getWord(), text, chatId);
+        WordCache wordCache = addContext.getExistingUserCacheData(chatId).getWordCache();
+        wordService.addWord(wordCache.getFolderName(), wordCache.getWord(), text, chatId);
         cache.evict(chatId);
     }
 

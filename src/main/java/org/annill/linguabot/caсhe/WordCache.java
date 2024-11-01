@@ -1,15 +1,18 @@
-package org.annill.linguabot.cashe;
+package org.annill.linguabot.caсhe;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.io.Serializable;
+
+
 @Getter
 @AllArgsConstructor
-public class WordCash {
+public class WordCache implements Serializable {
     private String folderName;
     private String word;
 
-    public WordCash(String folderName) {
+    public WordCache(String folderName) {
         this.folderName = folderName;
     }
 }

@@ -1,13 +1,12 @@
 package org.annill.linguabot.service;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.fabricOfAction.ActionHandlerHelper;
+import org.annill.linguabot.actions.ActionHandlerHelper;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-
-import java.util.Optional;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 @Service
 @AllArgsConstructor
@@ -20,12 +19,12 @@ public class TelegramService {
         }
 
         Message message = update.getMessage();
-        long userId = message.getChatId();
+        User user = message.getFrom();
 
-        String answer = Optional.ofNullable(actionHandlerHelper.getCurrentProcess(userId))
-                .map(action -> action.getActionState().process(message.getText(), userId, action.getAddState()))
-                .orElseGet(() -> actionHandlerHelper.process(message.getText(), userId));
+        String answer = actionHandlerHelper.getCurrentProcess(user)
+                .map(action -> action.getActionState().process(message.getText(), user, action.getAddState()))
+                .orElseGet(() -> actionHandlerHelper.process(message.getText(), user));
 
-        return new SendMessage(String.valueOf(userId), answer);
+        return new SendMessage(String.valueOf(user.getId()), answer);
     }
 }

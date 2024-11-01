@@ -15,6 +15,8 @@ public class UserDto {
     private Long id;
     @NotEmpty
     private Long chatId;
+    private String firstName;
+    private String userName;
     @JsonIgnore
     private List<Long> folderIds;
 }

@@ -17,11 +17,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class AiTokenService {
-    @Value("${ai.payload}")
-    private String payLoad;
     private final ExternalTokenFeignClient externalTokenApi;
     private final Utils utils;
     private final CacheManager cacheManager;
+    @Value("${ai.payload}")
+    private String payLoad;
 
     @SneakyThrows
     @Cacheable(value = "ai-token", key = "'token'")

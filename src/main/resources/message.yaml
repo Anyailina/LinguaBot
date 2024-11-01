@@ -1,0 +1,25 @@
+message:
+  not-correct-command:
+    "Нет такой команды"
+  name-folder:
+    "Напишите имя папки"
+  added-folder:
+    "Папка добавлена"
+  default:
+    "Неизвестная команда"
+  start:
+    "Добро пожаловать"
+  user-registered:
+    "Вы уже зарегистрированы"
+
+  mistake:
+    folder-exists:
+      "Папка уже существует"
+    folder-not-exists:
+      "Папки с таким названием нет"
+    translate-exists:
+      "Такой перевод уже есть"
+    word-suggestion-exists:
+      "Уже существует такое слово,  отправьте цифру с номером перевода,если хотите другой перевод отправьте его"
+    incorrect-number:
+      "Некорректное число"

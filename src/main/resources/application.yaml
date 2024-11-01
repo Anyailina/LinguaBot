@@ -9,6 +9,8 @@ spring:
     password: mypassword
   application:
     name: LinguaBot
+  config:
+    import: message.yaml
 
   jpa:
     hibernate:
@@ -20,6 +22,11 @@ spring:
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
     url: ${spring.datasource.url}
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 
 errorDetails:
@@ -44,28 +51,9 @@ telegramBot:
   name:
     "EnglishBot"
   token:
-   "7989664027:AAGv-d359PGiELNZqBSJCRJTgc5KPALZR-c"
+    "7989664027:AAGv-d359PGiELNZqBSJCRJTgc5KPALZR-c"
 
-
-message:
-  not-correct-command:
-    "Нет такой команды"
-  name-folder:
-    "Напишите название папки"
-  added-folder:
-    "Папка добавлена"
-  default:
-    "Неизвестная команда"
-  start:
-    "Добро пожаловать"
-  mistake:
-    folder-exists:
-      "Папка уже существует"
-    folder-not-exists:
-      "Папки с таким названием нет"
-    translate-exists:
-      "Такой перевод уже есть"
-    word-suggestion-exists:
-      "Уже существует такое слово,  отправьте цифру с номером перевода,если хотите другой перевод отправьте его"
-    incorrect-number:
-      "Некорректное число"
+cache:
+  name: commands
+  ttl:
+    minutes: 15

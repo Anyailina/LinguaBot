@@ -1,7 +1,7 @@
 package org.annill.linguabot.states.addFolderStates;
 
-import org.annill.linguabot.cashe.UserCacheData;
-
+import lombok.AllArgsConstructor;
+import org.annill.linguabot.caсhe.UserCacheData;
 import org.annill.linguabot.enums.AddFolderStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.states.context.AddContext;
@@ -10,12 +10,9 @@ import org.springframework.stereotype.Component;
 
 
 @Component
+@AllArgsConstructor
 public class NameDirectoryState implements IAdd {
     private final AddFolderState addFolderState;
-
-    public NameDirectoryState(AddFolderState addFolderState) {
-        this.addFolderState = addFolderState;
-    }
 
     @Override
     public String getStatus() {
@@ -24,7 +21,7 @@ public class NameDirectoryState implements IAdd {
 
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String text, long chatId) {
-        UserCacheData userCacheData = new UserCacheData(addFolderState,addContext.getActionHandler());
+        UserCacheData userCacheData = new UserCacheData(addFolderState, addContext.getActionHandler());
         addContext.getCache().put(chatId, userCacheData);
         return ResultStatusEnum.RIGHT;
     }

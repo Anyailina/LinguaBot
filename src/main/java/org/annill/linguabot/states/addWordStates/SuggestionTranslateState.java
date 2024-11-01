@@ -1,13 +1,12 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.RequiredArgsConstructor;
-import org.annill.linguabot.cashe.UserCacheData;
-import org.annill.linguabot.cashe.WordCash;
-import org.annill.linguabot.controller.WordController;
-import org.annill.linguabot.controller.WordSuggestionController;
+import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
+import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SuggestionTranslateState implements IAdd {
-    private final WordController wordController;
+    private final WordService wordService;
 
     @Value("${message.mistake.incorrect-number}")
     private String messageIncorrectNumber;
@@ -35,7 +34,7 @@ public class SuggestionTranslateState implements IAdd {
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String text, long chatId) {
         UserCacheData userCacheData = addContext.getExistingUserCacheData(chatId);
-        WordCash wordCash = userCacheData.getWordCash();
+        WordCache wordCache = userCacheData.getWordCache();
         List<WordSuggestionDto> wordSuggestionDtoList = userCacheData.getWordSuggestions();
 
         String answer;
@@ -50,17 +49,17 @@ public class SuggestionTranslateState implements IAdd {
             }
 
             WordSuggestionDto currentWord = wordSuggestionDtoList.get(numberOfSuggestion - 1);
-            wordController.addWord(wordCash.getFolderName(), currentWord.getPhrase(), currentWord.getTranslation(), chatId);
+            wordService.addWord(wordCache.getFolderName(), currentWord.getPhrase(), currentWord.getTranslation(), chatId);
             return ResultStatusEnum.RIGHT;
         }
 
-        if (wordController.wordIsSame(wordCash.getFolderName(), wordCash.getWord(), chatId, text)) {
+        if (wordService.wordIsSame(wordCache.getFolderName(), wordCache.getWord(), text, chatId)) {
             answer = messageTranslationExists;
             setWrongAnswer(answer);
             return ResultStatusEnum.MISTAKE;
         }
 
-        wordController.addWord(wordCash.getFolderName(), wordCash.getWord(), text, chatId);
+        wordService.addWord(wordCache.getFolderName(), wordCache.getWord(), text, chatId);
         return ResultStatusEnum.RIGHT;
     }
 

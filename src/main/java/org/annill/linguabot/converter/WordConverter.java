@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class WordConverter {
     private FolderConverter folderConverter;
+
     public WordDto convert(Word word) {
         return new WordDto(word.getId(), word.getName(), word.getTranslation(), folderConverter.convert(word.getFolder()));
     }

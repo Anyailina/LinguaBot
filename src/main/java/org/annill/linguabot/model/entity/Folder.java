@@ -2,26 +2,34 @@ package org.annill.linguabot.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.sql.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Data
 @Entity
 @Accessors(chain = true)
 @Table(name = "folders")
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Folder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @EqualsAndHashCode.Exclude
     private String name;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @Column(name = "create_at")
+    private Date createdAt;
+    @Column(name = "update_at")
+    private Date updateAt;
     @OneToMany(mappedBy = "folder")
+    @EqualsAndHashCode.Exclude
     private List<Word> words;
 
     public Folder(Long id, String name, User user) {
@@ -30,21 +38,10 @@ public class Folder {
         this.user = user;
     }
 
-    public Folder(String name, User user) {
+    public Folder(String name, User user, Date createdAt, Date updateAt) {
         this.name = name;
         this.user = user;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Folder folder = (Folder) o;
-        return Objects.equals(name, folder.name) && Objects.equals(user, folder.user);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, user);
+        this.createdAt = createdAt;
+        this.updateAt = updateAt;
     }
 }

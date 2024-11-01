@@ -3,7 +3,6 @@ package org.annill.linguabot.converter;
 import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.entity.User;
-import org.annill.linguabot.model.entity.Word;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,10 +15,10 @@ public class UserConvertor {
                 .map(folders -> folders.stream().map(Folder::getId).toList())
                 .orElse(List.of());
 
-        return new UserDto(user.getId(), user.getChatId(), folderIds);
+        return new UserDto(user.getId(), user.getChatId(), user.getFirstName(), user.getUserName(), folderIds);
     }
 
     public User convert(UserDto userDto) {
-        return new User(userDto.getId(),userDto.getChatId());
+        return new User(userDto.getId(), userDto.getChatId(), userDto.getFirstName(), userDto.getUserName());
     }
 }

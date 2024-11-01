@@ -1,14 +1,14 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.cashe.UserCacheData;
-import org.annill.linguabot.cashe.WordCash;
-import org.annill.linguabot.controller.WordController;
-import org.annill.linguabot.controller.WordSuggestionController;
+import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.model.dto.WordDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
+import org.annill.linguabot.service.WordService;
+import org.annill.linguabot.service.WordSuggestionService;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 public class WordState implements IAdd {
     private final IAdd translateState;
     private final IAdd suggestionTranslateState;
-    private final WordSuggestionController wordSuggestionController;
-    private final WordController wordController;
+    private final WordSuggestionService wordSuggestionService;
+    private final WordService wordService;
 
     @Value("${message.mistake.word-suggestion-exists}")
     private String messageWordSuggestionExists;
@@ -50,9 +50,9 @@ public class WordState implements IAdd {
     @Override
     public void nextState(AddContext addContext, String text, long chatId) {
         UserCacheData userCacheData = addContext.getExistingUserCacheData(chatId);
-        WordCash wordCash = createWordCash(userCacheData, text);
-        List<WordSuggestionDto> wordsSuggestionDto = new ArrayList<>(wordSuggestionController.getWords(text));
-        List<WordDto> savedWordsDto = wordController.getWords(wordCash.getFolderName(), text, chatId);
+        WordCache wordCache = createWordCash(userCacheData, text);
+        List<WordSuggestionDto> wordsSuggestionDto = new ArrayList<>(wordSuggestionService.getWords(text));
+        List<WordDto> savedWordsDto = wordService.getWords(wordCache.getFolderName(), text, chatId);
 
         List<WordSuggestionDto> savedWords = savedWordsDto.stream()
                 .map(element -> new WordSuggestionDto(element.getId(), element.getName(), element.getTranslation()))
@@ -63,7 +63,7 @@ public class WordState implements IAdd {
         IAdd nextState = determineNextState(wordsSuggestionDto);
         answer = generateAnswer(wordsSuggestionDto);
 
-        UserCacheData newUserCacheData = createUserCacheData(nextState, addContext, wordCash, wordsSuggestionDto);
+        UserCacheData newUserCacheData = createUserCacheData(nextState, addContext, wordCache, wordsSuggestionDto);
         updateContextAndCache(addContext, nextState, chatId, newUserCacheData);
     }
 
@@ -75,12 +75,12 @@ public class WordState implements IAdd {
         return wordsDto.isEmpty() ? AddWordStateEnum.WORD.getStatesName() : createSuggestionMessage(wordsDto);
     }
 
-    private WordCash createWordCash(UserCacheData userCacheData, String text) {
-        return new WordCash(userCacheData.getWordCash().getFolderName(), text);
+    private WordCache createWordCash(UserCacheData userCacheData, String text) {
+        return new WordCache(userCacheData.getWordCache().getFolderName(), text);
     }
 
-    private UserCacheData createUserCacheData(IAdd state, AddContext addContext, WordCash wordCash, List<WordSuggestionDto> suggestions) {
-        return new UserCacheData(state, addContext.getActionHandler(), wordCash, suggestions);
+    private UserCacheData createUserCacheData(IAdd state, AddContext addContext, WordCache wordCache, List<WordSuggestionDto> suggestions) {
+        return new UserCacheData(state, addContext.getActionHandler(), wordCache, suggestions);
     }
 
     private void updateContextAndCache(AddContext addContext, IAdd nextState, long chatId, UserCacheData newUserCacheData) {
