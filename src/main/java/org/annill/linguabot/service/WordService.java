@@ -10,9 +10,8 @@ import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.repository.WordRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,11 +25,11 @@ public class WordService {
 
     public WordDto addWord(String folderName, String phrase, String translation, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
-        if (folderDto == null) {
+        if (folderDto == null && !existsSameWord(folderName, phrase, translation, userId)) {
             return null;
         }
         Folder folder = folderConverter.convert(folderDto);
-        Word word = new Word(phrase, translation, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), folder);
+        Word word = new Word(phrase, translation, folder);
         return wordConverter.convert(wordRepository.save(word));
     }
 
@@ -45,11 +44,10 @@ public class WordService {
         return words;
     }
 
-    public Boolean wordIsSame(String folderName, String phrase, String translation, Long userId) {
+    public Boolean existsSameWord(String folderName, String phrase, String translation, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
-        List<Word> words = wordRepository.findByNameAndTranslationAndFolder(phrase, translation, folder);
-
-        return !words.isEmpty();
+        Optional<Word> word = wordRepository.findFirstByNameAndFolderAndTranslation(phrase, folder, translation);
+        return word.isEmpty();
     }
 }

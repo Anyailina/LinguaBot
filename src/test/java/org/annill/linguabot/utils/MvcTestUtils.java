@@ -1,6 +1,7 @@
 package org.annill.linguabot.utils;
 
 
+import lombok.AllArgsConstructor;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,16 +17,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Component
+@AllArgsConstructor
 public class MvcTestUtils {
     private final MockUpdateFactory mockUpdateFactory;
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
-
-    public MvcTestUtils(MockUpdateFactory mockUpdateFactory, MockMvc mockMvc, ObjectMapper objectMapper) {
-        this.mockUpdateFactory = mockUpdateFactory;
-        this.mockMvc = mockMvc;
-        this.objectMapper = objectMapper;
-    }
 
     public SendMessage getSendMessage(String command) throws Exception {
         String updateJson = mockUpdateFactory.createMockUpdateJson(command);

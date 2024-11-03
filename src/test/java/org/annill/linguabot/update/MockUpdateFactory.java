@@ -1,5 +1,6 @@
 package org.annill.linguabot.update;
 
+import lombok.Getter;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -15,15 +16,13 @@ public class MockUpdateFactory {
     private final ObjectMapper objectMapper;
     private final String firstName = "Ann";
     private final String userName = "Anya";
+    @Getter
     private final Long userId = 123L;
 
     public MockUpdateFactory(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
 
     public Update createMockUpdate(String messageText) {
         Update update = mock(Update.class);

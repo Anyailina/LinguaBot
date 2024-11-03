@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -45,10 +46,10 @@ public class User {
         this.userName = userName;
     }
 
-    public User(Long id, Date createdAt, Date updateAt, String firstName, String userName) {
+    public User(Long id, String firstName, String userName) {
         this.chatId = id;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
+        this.createdAt = Date.valueOf(LocalDate.now());
+        this.updateAt = Date.valueOf(LocalDate.now());
         this.firstName = firstName;
         this.userName = userName;
     }

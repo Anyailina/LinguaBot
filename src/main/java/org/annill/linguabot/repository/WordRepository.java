@@ -12,8 +12,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     List<Word> findByNameAndFolder(String name, Folder folder);
 
-    List<Word> findByNameAndTranslationAndFolder(String name, String translation, Folder folder);
-
-
-    Optional<Word> findFirstByNameAndFolder(String name, Folder folder);
+    Optional<Word> findFirstByNameAndFolderAndTranslation(String name, Folder folder, String translation);
 }

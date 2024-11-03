@@ -1,6 +1,7 @@
 package org.annill.linguabot.states.addWordStates;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.annill.linguabot.caсhe.UserCacheData;
 import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
@@ -20,16 +21,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WordState implements IAdd {
     private final IAdd translateState;
     private final IAdd suggestionTranslateState;
-    private final WordSuggestionService wordSuggestionService;
     private final WordService wordService;
-
+    private final WordSuggestionService wordSuggestionService;
     @Value("${message.mistake.word-suggestion-exists}")
     private String messageWordSuggestionExists;
-
     private String answer;
 
     @Override
@@ -47,16 +46,19 @@ public class WordState implements IAdd {
         return "";
     }
 
+    @SneakyThrows
     @Override
     public void nextState(AddContext addContext, String text, long chatId) {
         UserCacheData userCacheData = addContext.getExistingUserCacheData(chatId);
         WordCache wordCache = createWordCash(userCacheData, text);
-        List<WordSuggestionDto> wordsSuggestionDto = new ArrayList<>(wordSuggestionService.getWords(text));
+
+        List<WordSuggestionDto> wordsSuggestionDto = new ArrayList<>(wordSuggestionService.getWords(wordCache.getWord(), text));
         List<WordDto> savedWordsDto = wordService.getWords(wordCache.getFolderName(), text, chatId);
 
         List<WordSuggestionDto> savedWords = savedWordsDto.stream()
                 .map(element -> new WordSuggestionDto(element.getId(), element.getName(), element.getTranslation()))
                 .collect(Collectors.toCollection(ArrayList::new));
+
 
         wordsSuggestionDto.removeAll(savedWords);
 

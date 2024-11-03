@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 
 @Data
@@ -30,11 +31,11 @@ public class Word {
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
-    public Word(String name, String translation, Date createdAt, Date updateAt, Folder folder) {
+    public Word(String name, String translation, Folder folder) {
         this.name = name;
         this.translation = translation;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
+        this.createdAt = Date.valueOf(LocalDate.now());
+        this.updateAt = Date.valueOf(LocalDate.now());
         this.folder = folder;
     }
 

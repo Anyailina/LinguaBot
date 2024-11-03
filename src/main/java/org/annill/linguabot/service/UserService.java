@@ -9,9 +9,6 @@ import org.annill.linguabot.repository.UserRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -30,7 +27,7 @@ public class UserService {
         long idUserFromTelegram = userFromTelegram.getId();
 
         if (userRepository.findByChatId(idUserFromTelegram).isEmpty()) {
-            User user = new User(idUserFromTelegram, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()), userFromTelegram.getFirstName(), userFromTelegram.getUserName());
+            User user = new User(idUserFromTelegram, userFromTelegram.getFirstName(), userFromTelegram.getUserName());
             return userConvertor.convert(userRepository.save(user));
         }
         return null;

@@ -5,6 +5,8 @@ import org.annill.linguabot.caсhe.UserCacheData;
 import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
+import org.annill.linguabot.kafka.KafkaProducer;
+import org.annill.linguabot.model.dto.WordDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.states.context.AddContext;
@@ -18,6 +20,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class SuggestionTranslateState implements IAdd {
+    private final KafkaProducer kafkaProducer;
     private final WordService wordService;
 
     @Value("${message.mistake.incorrect-number}")
@@ -52,7 +55,9 @@ public class SuggestionTranslateState implements IAdd {
             return ResultStatusEnum.RIGHT;
         }
 
-        if (wordService.wordIsSame(wordCache.getFolderName(), wordCache.getWord(), text, chatId)) {
+        kafkaProducer.sendMessage(wordCache.getWord(), text);
+        if (wordService.existsSameWord(wordCache.getFolderName(), wordCache.getWord(), text, chatId)) {
+
             answer = messageTranslationExists;
             setWrongAnswer(answer);
             return ResultStatusEnum.MISTAKE;

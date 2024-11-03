@@ -1,9 +1,10 @@
 package org.annill.linguabot.states.addWordStates;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.caсhe.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
+import org.annill.linguabot.kafka.KafkaProducer;
 import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.states.context.AddContext;
 import org.annill.linguabot.states.impl.IAdd;
@@ -12,9 +13,10 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TranslateState implements IAdd {
-    private WordService wordService;
+    private final KafkaProducer kafkaProducer;
+    private final WordService wordService;
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
 
@@ -27,17 +29,18 @@ public class TranslateState implements IAdd {
     @Override
     public ResultStatusEnum processMessage(AddContext addContext, String phrase, long chatId) {
         WordCache wordCache = addContext.getExistingUserCacheData(chatId).getWordCache();
-        if (wordService.wordIsSame(wordCache.getFolderName(), wordCache.getWord(), phrase, chatId)) {
-            return ResultStatusEnum.MISTAKE;
+        if (wordService.existsSameWord(wordCache.getFolderName(), wordCache.getWord(), phrase, chatId)) {
+            return ResultStatusEnum.RIGHT;
         }
-        return ResultStatusEnum.RIGHT;
+        return ResultStatusEnum.MISTAKE;
     }
 
     @Override
-    public void nextState(AddContext addContext, String text, long chatId) {
+    public void nextState(AddContext addContext, String translation, long chatId) {
         Cache cache = addContext.getCache();
         WordCache wordCache = addContext.getExistingUserCacheData(chatId).getWordCache();
-        wordService.addWord(wordCache.getFolderName(), wordCache.getWord(), text, chatId);
+        wordService.addWord(wordCache.getFolderName(), wordCache.getWord(), translation, chatId);
+        kafkaProducer.sendMessage(wordCache.getWord(), translation);
         cache.evict(chatId);
     }
 

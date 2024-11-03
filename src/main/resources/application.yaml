@@ -27,7 +27,16 @@ spring:
     redis:
       host: localhost
       port: 6379
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
+
+http:
+  word:
+    suggestion: http://localhost:8081/words
 
 errorDetails:
   user-not-found:
@@ -47,6 +56,10 @@ errorDetails:
     message: "The error is unknown."
     httpCode: 500
 
+
+topic:
+  name:
+    "addWord"
 telegramBot:
   name:
     "EnglishBot"

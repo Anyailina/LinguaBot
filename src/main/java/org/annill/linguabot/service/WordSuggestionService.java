@@ -1,40 +1,31 @@
 package org.annill.linguabot.service;
 
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.SimpleType;
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.converter.WordSuggestionConvertor;
+import lombok.SneakyThrows;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
-import org.annill.linguabot.model.entity.WordSuggestion;
-import org.annill.linguabot.repository.WordSuggestionRepository;
+import org.annill.linguabot.utils.Utils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 public class WordSuggestionService {
-    private WordSuggestionRepository wordSuggestionRepository;
-    private WordSuggestionConvertor wordSuggestionConvertor;
+    private final RestTemplate wordSuggestionTemplate;
+    private final Utils utils;
+    @Value("${http.word.suggestion}")
+    private String addressWordSuggestion;
 
-    public WordSuggestionDto addWord(String phrase, String translation) {
-        if (getWord(phrase) != null) {
-            return null;
-        }
-        WordSuggestion wordSuggestion = new WordSuggestion(phrase, translation, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()));
-        WordSuggestion savedWordSuggestion = wordSuggestionRepository.save(wordSuggestion);
-        return wordSuggestionConvertor.convert(savedWordSuggestion);
-    }
+    @SneakyThrows
+    public List<WordSuggestionDto> getWords(String word, String translation) {
+        WordSuggestionDto wordTranslation = new WordSuggestionDto(word, translation);
+        String wordsSuggestion = wordSuggestionTemplate.postForObject(addressWordSuggestion, wordTranslation, String.class);
+        List<WordSuggestionDto> wordsSuggestionDto = utils.getObjectMapper().readValue(wordsSuggestion, CollectionType.construct(List.class, SimpleType.construct(WordSuggestionDto.class)));
+        return wordsSuggestionDto;
 
-    public WordSuggestionDto getWord(String word) {
-        return wordSuggestionRepository.findFirstByPhrase(word)
-                .map(wordSuggestionConvertor::convert)
-                .orElse(null);
-    }
-
-    public List<WordSuggestionDto> getWords(String word) {
-        return wordSuggestionRepository.findByPhrase(word)
-                .stream()
-                .map(wordSuggestionConvertor::convert).toList();
     }
 }

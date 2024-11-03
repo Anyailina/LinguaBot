@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -38,10 +39,10 @@ public class Folder {
         this.user = user;
     }
 
-    public Folder(String name, User user, Date createdAt, Date updateAt) {
+    public Folder(String name, User user) {
         this.name = name;
         this.user = user;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
+        this.createdAt = Date.valueOf(LocalDate.now());
+        this.updateAt = Date.valueOf(LocalDate.now());
     }
 }

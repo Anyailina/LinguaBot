@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "words_suggestion")
@@ -24,11 +25,11 @@ public class WordSuggestion {
     @Column(name = "update_at")
     private Date updateAt;
 
-    public WordSuggestion(String phrase, String translation, Date createdAt, Date updateAt) {
+    public WordSuggestion(String phrase, String translation) {
         this.phrase = phrase;
         this.translation = translation;
-        this.createdAt = createdAt;
-        this.updateAt = updateAt;
+        this.createdAt = Date.valueOf(LocalDate.now());
+        this.updateAt = Date.valueOf(LocalDate.now());
     }
 
     public WordSuggestion(Long id, String phrase, String translation) {

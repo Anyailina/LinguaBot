@@ -11,9 +11,6 @@ import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.repository.FolderRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 
 @Service
 @AllArgsConstructor
@@ -30,7 +27,7 @@ public class FolderService {
 
         UserDto userDto = userService.getUserIdByChatId(userChatId);
         User user = userConvertor.convert(userDto);
-        Folder folder = new Folder(name, user, Date.valueOf(LocalDate.now()), Date.valueOf(LocalDate.now()));
+        Folder folder = new Folder(name, user);
         Folder savedFolder = folderRepository.save(folder);
         return folderConverter.convert(savedFolder);
     }
