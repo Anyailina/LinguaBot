@@ -1,8 +1,8 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.RequiredArgsConstructor;
-import org.annill.linguabot.caсhe.UserCacheData;
-import org.annill.linguabot.caсhe.WordCache;
+import org.annill.linguabot.cache.UserCacheData;
+import org.annill.linguabot.cache.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.service.FolderService;

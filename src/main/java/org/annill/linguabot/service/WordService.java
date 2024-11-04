@@ -23,31 +23,30 @@ public class WordService {
     private final FolderService folderService;
 
 
-    public WordDto addWord(String folderName, String phrase, String translation, Long userId) {
+    public void addWord(String folderName, String phrase, String translation, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         if (folderDto == null && !existsSameWord(folderName, phrase, translation, userId)) {
-            return null;
+            return;
         }
         Folder folder = folderConverter.convert(folderDto);
         Word word = new Word(phrase, translation, folder);
-        return wordConverter.convert(wordRepository.save(word));
+        wordRepository.save(word);
     }
 
     public List<WordDto> getWords(String folderName, String phrase, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
-        List<WordDto> words = wordRepository.findByNameAndFolder(phrase, folder)
+
+        return wordRepository.findByNameAndFolder(phrase, folder)
                 .stream()
                 .map(wordConverter::convert)
                 .toList();
-
-        return words;
     }
 
     public Boolean existsSameWord(String folderName, String phrase, String translation, Long userId) {
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         Folder folder = folderConverter.convert(folderDto);
         Optional<Word> word = wordRepository.findFirstByNameAndFolderAndTranslation(phrase, folder, translation);
-        return word.isEmpty();
+        return word.isPresent();
     }
 }

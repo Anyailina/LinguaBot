@@ -22,6 +22,7 @@ public class CacheConfig {
     @Value("${cache.ttl.minutes}")
     private long cacheTtlMinutes;
 
+
     @Bean
     public Caffeine caffeineConfig() {
         return Caffeine.newBuilder().expireAfterWrite(60, TimeUnit.MINUTES);

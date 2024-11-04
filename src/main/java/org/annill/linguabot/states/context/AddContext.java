@@ -4,7 +4,7 @@ package org.annill.linguabot.states.context;
 import lombok.Getter;
 import lombok.Setter;
 import org.annill.linguabot.actions.abs.impl.ActionHandler;
-import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.cache.UserCacheData;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.states.impl.IAdd;
 import org.springframework.cache.Cache;

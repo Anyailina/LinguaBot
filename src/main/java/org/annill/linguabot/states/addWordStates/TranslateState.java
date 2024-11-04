@@ -1,7 +1,7 @@
 package org.annill.linguabot.states.addWordStates;
 
 import lombok.RequiredArgsConstructor;
-import org.annill.linguabot.caсhe.WordCache;
+import org.annill.linguabot.cache.WordCache;
 import org.annill.linguabot.enums.AddWordStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.kafka.KafkaProducer;
@@ -30,9 +30,9 @@ public class TranslateState implements IAdd {
     public ResultStatusEnum processMessage(AddContext addContext, String phrase, long chatId) {
         WordCache wordCache = addContext.getExistingUserCacheData(chatId).getWordCache();
         if (wordService.existsSameWord(wordCache.getFolderName(), wordCache.getWord(), phrase, chatId)) {
-            return ResultStatusEnum.RIGHT;
+            return ResultStatusEnum.MISTAKE;
         }
-        return ResultStatusEnum.MISTAKE;
+        return ResultStatusEnum.RIGHT;
     }
 
     @Override

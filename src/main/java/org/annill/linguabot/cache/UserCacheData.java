@@ -1,8 +1,9 @@
-package org.annill.linguabot.caсhe;
+package org.annill.linguabot.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.annill.linguabot.actions.abs.impl.ActionHandler;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.states.impl.IAdd;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserCacheData implements Serializable {
     private IAdd addState;

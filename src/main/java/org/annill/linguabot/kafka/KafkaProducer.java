@@ -2,7 +2,6 @@ package org.annill.linguabot.kafka;
 
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;

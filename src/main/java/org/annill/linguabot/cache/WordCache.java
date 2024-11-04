@@ -1,4 +1,4 @@
-package org.annill.linguabot.caсhe;
+package org.annill.linguabot.cache;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

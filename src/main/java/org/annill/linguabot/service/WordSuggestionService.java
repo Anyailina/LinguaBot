@@ -17,15 +17,14 @@ import java.util.List;
 public class WordSuggestionService {
     private final RestTemplate wordSuggestionTemplate;
     private final Utils utils;
-    @Value("${http.word.suggestion}")
+    @Value("${http.word-suggestion}")
     private String addressWordSuggestion;
 
     @SneakyThrows
     public List<WordSuggestionDto> getWords(String word, String translation) {
-        WordSuggestionDto wordTranslation = new WordSuggestionDto(word, translation);
-        String wordsSuggestion = wordSuggestionTemplate.postForObject(addressWordSuggestion, wordTranslation, String.class);
-        List<WordSuggestionDto> wordsSuggestionDto = utils.getObjectMapper().readValue(wordsSuggestion, CollectionType.construct(List.class, SimpleType.construct(WordSuggestionDto.class)));
-        return wordsSuggestionDto;
+        WordSuggestionDto wordSuggestionDto = new WordSuggestionDto(word, translation);
+        String wordsSuggestion = wordSuggestionTemplate.postForObject(addressWordSuggestion, wordSuggestionDto, String.class);
+        return utils.getObjectMapper().readValue(wordsSuggestion, CollectionType.construct(List.class, SimpleType.construct(WordSuggestionDto.class)));
 
     }
 }

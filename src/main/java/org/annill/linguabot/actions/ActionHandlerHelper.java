@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.annill.linguabot.actions.abs.impl.ActionHandler;
-import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.cache.UserCacheData;
 import org.annill.linguabot.enums.ActionEnum;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;

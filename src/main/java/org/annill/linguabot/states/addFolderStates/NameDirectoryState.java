@@ -1,7 +1,7 @@
 package org.annill.linguabot.states.addFolderStates;
 
 import lombok.AllArgsConstructor;
-import org.annill.linguabot.caсhe.UserCacheData;
+import org.annill.linguabot.cache.UserCacheData;
 import org.annill.linguabot.enums.AddFolderStateEnum;
 import org.annill.linguabot.enums.ResultStatusEnum;
 import org.annill.linguabot.states.context.AddContext;
