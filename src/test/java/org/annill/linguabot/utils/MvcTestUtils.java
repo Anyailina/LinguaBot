@@ -2,6 +2,7 @@ package org.annill.linguabot.utils;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,6 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Component
 @AllArgsConstructor
+@Getter
 public class MvcTestUtils {
     private final MockUpdateFactory mockUpdateFactory;
     private final MockMvc mockMvc;
