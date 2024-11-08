@@ -32,11 +32,18 @@ spring:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  cloud:
+    openfeign:
+      client:
+        config:
+          ai:
+            url: http://localhost:8081/words
+            loggerLevel: full
 
+          wordSuggestion:
+            loggerLevel: full
+            url: http://localhost:8082/ai/request
 
-http:
-  word-suggestion: http://localhost:8081/words
-  ai-request: http://localhost:8082/ai/request
 
 errorDetails:
   user-not-found:

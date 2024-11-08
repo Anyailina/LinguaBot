@@ -26,8 +26,8 @@ public class TelegramController extends DefaultAbsSender {
         execute(telegramService.processUpdate(update));
     }
 
-    @PostMapping("/webhookTest")
-    public SendMessage testGetUpdate(@RequestBody Update update) {
-        return telegramService.processUpdate(update);
-    }
+//    @PostMapping("/webhookTest")
+//    public SendMessage testGetUpdate(@RequestBody Update update) {
+//        return telegramService.processUpdate(update);
+//    }
 }
