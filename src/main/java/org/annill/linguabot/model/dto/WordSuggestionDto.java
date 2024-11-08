@@ -15,13 +15,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class WordSuggestionDto implements Serializable {
-    @EqualsAndHashCode.Exclude
-    private Long id;
     private String phrase;
     private String translation;
 
-    public WordSuggestionDto(String phrase, String translation) {
+    public WordSuggestionDto(String phrase) {
         this.phrase = phrase;
-        this.translation = translation;
     }
 }

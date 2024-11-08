@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.configuration.WireMockConfiguration;
-import org.annill.linguabot.enums.ActionEnum;
+import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.repository.FolderRepository;
@@ -158,7 +158,7 @@ public class AddWordWithSuggestionTest {
 
     private List<WordSuggestionDto> getSavedWords(List<Word> words) {
         return words.stream()
-                .map(element -> new WordSuggestionDto(element.getId(), element.getName(), element.getTranslation()))
+                .map(element -> new WordSuggestionDto(element.getName(), element.getTranslation()))
                 .collect(Collectors.toList());
     }
 

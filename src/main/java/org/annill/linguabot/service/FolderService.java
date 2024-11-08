@@ -42,4 +42,10 @@ public class FolderService {
                 .map(folderConverter::convert)
                 .orElse(null);
     }
+
+    public FolderDto getFolderById(Long folderId, Long userId) {
+        return folderRepository.findByIdAndUserChatId(folderId, userId)
+                .map(folderConverter::convert)
+                .orElse(null);
+    }
 }

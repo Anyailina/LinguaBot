@@ -37,12 +37,12 @@ spring:
       client:
         config:
           ai:
-            url: http://localhost:8081/words
+            url: http://localhost:8082/ai/request
             loggerLevel: full
 
           wordSuggestion:
             loggerLevel: full
-            url: http://localhost:8082/ai/request
+            url: http://localhost:8081/words
 
 
 errorDetails:

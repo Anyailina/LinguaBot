@@ -12,8 +12,8 @@ import java.util.List;
 public class WordSuggestionService {
     private final WordSuggestionFeignClient wordSuggestionFeignClient;
 
-    public List<WordSuggestionDto> getWords(String word, String translation) {
-        WordSuggestionDto wordSuggestionDto = new WordSuggestionDto(word, translation);
+    public List<WordSuggestionDto> getWords(String word) {
+        WordSuggestionDto wordSuggestionDto = new WordSuggestionDto(word);
         return wordSuggestionFeignClient.getAnswer(wordSuggestionDto);
     }
 }

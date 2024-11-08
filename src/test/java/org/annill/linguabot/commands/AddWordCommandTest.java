@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.configuration.WireMockConfiguration;
-import org.annill.linguabot.enums.ActionEnum;
+import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.repository.FolderRepository;

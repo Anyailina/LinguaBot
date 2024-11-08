@@ -1,6 +1,6 @@
 package org.annill.linguabot.feignClient;
 
-import org.annill.linguabot.model.AiModel;
+import org.annill.linguabot.model.ai.AiModel;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

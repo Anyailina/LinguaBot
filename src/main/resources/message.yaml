@@ -1,4 +1,6 @@
 message:
+  not_correct-input:
+    "Папки и слова должны содержать только буквы"
   not-correct-command:
     "Нет такой команды"
   name-folder:

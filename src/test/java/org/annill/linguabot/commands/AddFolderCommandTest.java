@@ -1,7 +1,7 @@
 package org.annill.linguabot.commands;
 
 import jakarta.persistence.EntityManager;
-import org.annill.linguabot.enums.ActionEnum;
+import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.repository.FolderRepository;
 import org.annill.linguabot.service.FolderService;

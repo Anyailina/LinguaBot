@@ -1,7 +1,8 @@
 package org.annill.linguabot.service;
 
-import lombok.AllArgsConstructor;
-import org.annill.linguabot.actions.ActionHandlerHelper;
+import lombok.RequiredArgsConstructor;
+import org.annill.linguabot.handler.action.ActionHandlerHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -9,11 +10,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TelegramService {
     private final ActionHandlerHelper actionHandlerHelper;
+    @Value("${message.not_correct-input}")
+    private String messageInputNotCorrect;
+    private String regular = "^[а-яА-Яa-zA-Z/_]+$";
 
     public SendMessage processUpdate(Update update) {
+
         if (update == null || !update.hasMessage() || !update.getMessage().hasText()) {
             return new SendMessage();
         }
@@ -21,9 +26,11 @@ public class TelegramService {
         Message message = update.getMessage();
         User user = message.getFrom();
 
-        String answer = actionHandlerHelper.getCurrentProcess(user)
-                .map(action -> action.getActionState().process(message.getText(), user, action.getAddState()))
-                .orElseGet(() -> actionHandlerHelper.process(message.getText(), user));
+        if ( !update.getMessage().getText().matches(regular)){
+            return new SendMessage(String.valueOf(user.getId()),messageInputNotCorrect);
+        }
+
+        String answer = actionHandlerHelper.process(message.getText(), user);
 
         return new SendMessage(String.valueOf(user.getId()), answer);
     }

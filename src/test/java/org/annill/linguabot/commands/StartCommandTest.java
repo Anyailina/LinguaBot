@@ -3,7 +3,7 @@ package org.annill.linguabot.commands;
 
 import jakarta.persistence.EntityManager;
 import org.annill.linguabot.configuration.TestConfiguration;
-import org.annill.linguabot.enums.ActionEnum;
+import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.repository.UserRepository;
 import org.annill.linguabot.service.UserService;

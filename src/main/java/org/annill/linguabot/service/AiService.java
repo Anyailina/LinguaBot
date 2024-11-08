@@ -3,7 +3,7 @@ package org.annill.linguabot.service;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.annill.linguabot.feignClient.AiFeignClient;
-import org.annill.linguabot.model.AiModel;
+import org.annill.linguabot.model.ai.AiModel;
 import org.springframework.stereotype.Service;
 
 @Service
