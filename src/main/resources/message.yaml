@@ -1,4 +1,8 @@
 message:
+  open-miniapp:
+    "Открыть мини-приложение"
+  button-open-miniapp:
+    "Нажмите кнопку, чтобы открыть мини-приложение."
   not_correct-input:
     "Папки и слова должны содержать только буквы"
   not-correct-command:

@@ -44,7 +44,9 @@ spring:
             loggerLevel: full
             url: http://localhost:8081/words
 
-
+http:
+  mini-app:
+    "https://t.me/your_bot_username?start=your_start_parameter"
 errorDetails:
   user-not-found:
     code: "USER_NOT_FOUND"

@@ -11,6 +11,7 @@ public enum ActionEnum {
     ADD_FOLDER("/add_folder"),
     ADD_WORD("/add_word"),
     START("/start"),
+    REPEAT_WORDS("/repeat_words"),
     PROCESS_REPLY("");
 
     private static HashMap<String, ActionEnum> map = new HashMap<>();
