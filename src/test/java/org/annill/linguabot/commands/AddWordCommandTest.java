@@ -129,7 +129,7 @@ public class AddWordCommandTest {
 
         SendMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getWord());
         Assertions.assertEquals(wordsMessageUtils.getMessageSendTranslation(), sendMessage.getText());
-        wordService.addWord(folderName, wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
+        // wordService.addWord(folderName, wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
         SendMessage sendMessageTranslation = mvcTestUtils.getSendMessage(wordsMessageUtils.getTranslation());
         Assertions.assertEquals(wordsMessageUtils.getMessageTranslationExists(), sendMessageTranslation.getText());

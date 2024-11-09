@@ -7,6 +7,7 @@ import org.annill.linguabot.handler.response.ResponseHandler;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.WordDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
+import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.service.WordSuggestionService;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,8 @@ public class WordState implements ResponseHandler {
     private final Cache cache;
     @Value("${message.mistake.word-suggestion-exists}")
     private String messageWordSuggestionExists;
+    @Value("${message.not_correct-input}")
+    private String messageInputNotCorrect;
 
 
     @Override
@@ -37,6 +40,9 @@ public class WordState implements ResponseHandler {
 
     @Override
     public String process(String word, User user) {
+        if (!RegexPattern.isCorrectMessage(word)) {
+            return messageInputNotCorrect;
+        }
         Long userId = user.getId();
         Long folderId = getCurrentFolderId(userId);
 

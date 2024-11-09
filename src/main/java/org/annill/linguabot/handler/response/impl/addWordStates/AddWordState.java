@@ -6,6 +6,7 @@ import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
 import org.annill.linguabot.kafka.KafkaProducer;
 import org.annill.linguabot.model.cache.SessionCache;
+import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -22,6 +23,8 @@ public class AddWordState implements ResponseHandler {
     private final Cache cache;
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
+    @Value("${message.not_correct-input}")
+    private String messageInputNotCorrect;
 
 
     @Override
@@ -31,6 +34,9 @@ public class AddWordState implements ResponseHandler {
 
     @Override
     public String process(String translation, User user) {
+        if (!RegexPattern.isCorrectMessage(translation)) {
+            return messageInputNotCorrect;
+        }
         Long userId = user.getId();
         SessionCache sessionCache = cache.get(userId, SessionCache.class);
         Long folderIds = Objects.requireNonNull(sessionCache).getCurrentFolderId();

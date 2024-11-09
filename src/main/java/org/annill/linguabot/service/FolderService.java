@@ -9,7 +9,13 @@ import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.repository.FolderRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -41,6 +47,18 @@ public class FolderService {
         return folderRepository.findByNameAndUserChatId(name, userId)
                 .map(folderConverter::convert)
                 .orElse(null);
+    }
+
+    public Page<FolderDto> getPageFolderByUserChatId(Long userId, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Folder> folderPage = folderRepository.findAllByUserChatId(userId, pageable);
+
+        List<FolderDto> folderDtos = folderPage.getContent().stream()
+                .map(folderConverter::convert)
+                .toList();
+
+        return new PageImpl<>(folderDtos, pageable, folderPage.getTotalElements());
+
     }
 
     public FolderDto getFolderById(Long folderId, Long userId) {

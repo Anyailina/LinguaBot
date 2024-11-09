@@ -1,5 +1,6 @@
 package org.annill.linguabot.model.cache;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 public class SessionCache {
     private ResponseEnum response;
@@ -22,6 +24,7 @@ public class SessionCache {
         this.response = response;
         this.currentFolderId = currentFolderId;
     }
+
 
     public SessionCache(ResponseEnum response, Long currentFolderId, String word) {
         this.response = response;

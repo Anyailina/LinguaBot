@@ -9,6 +9,8 @@ import org.annill.linguabot.handler.response.ResponseHandlerHelper;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.Optional;
@@ -25,13 +27,14 @@ public class ProcessReplyActionHandler implements ActionHandler {
     }
 
     @Override
-    public String process(String text, User user) {
+    public BotApiMethod<?> process(String text, User user) {
         SessionCache sessionCache = cache.get(user.getId(), SessionCache.class);
         ResponseEnum responseEnum = Optional.ofNullable(sessionCache)
                 .map(SessionCache::getResponse)
                 .orElse(DefaultEnum.DEFAULT);
-        return responseHandlerHelper.findHandler(responseEnum)
+        String answer = responseHandlerHelper.findHandler(responseEnum)
                 .process(text, user);
+        return new SendMessage(String.valueOf(user.getId()), answer);
     }
 
 

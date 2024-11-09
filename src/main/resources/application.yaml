@@ -62,7 +62,9 @@ errorDetails:
     code: "UNKNOWN ERROR"
     message: "The error is unknown."
     httpCode: 500
-
+folder:
+  select:
+    "Выберите папку: "
 
 topic:
   name:

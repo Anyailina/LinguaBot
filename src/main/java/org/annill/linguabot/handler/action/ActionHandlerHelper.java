@@ -3,16 +3,15 @@ package org.annill.linguabot.handler.action;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Component
@@ -29,7 +28,7 @@ public class ActionHandlerHelper {
         listAction.forEach(actionHandler -> actionHandlersMap.put(actionHandler.getType(), actionHandler));
     }
 
-    public String process(String text, User user) {
+    public BotApiMethod<?> process(String text, User user) {
         ActionHandler action = actionHandlersMap.get(ActionEnum.fromText(text));
         return action.process(text, user);
     }

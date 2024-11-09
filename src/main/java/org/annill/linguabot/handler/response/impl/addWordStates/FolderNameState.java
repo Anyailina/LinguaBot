@@ -6,6 +6,7 @@ import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.FolderDto;
+import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.FolderService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -19,6 +20,8 @@ public class FolderNameState implements ResponseHandler {
     private final Cache cache;
     @Value("${message.mistake.folder-not-exists}")
     private String messageFolderNotExists;
+    @Value("${message.not_correct-input}")
+    private String messageInputNotCorrect;
 
     @Override
     public ResponseEnum getType() {
@@ -27,6 +30,9 @@ public class FolderNameState implements ResponseHandler {
 
     @Override
     public String process(String folderName, User user) {
+        if (!RegexPattern.isCorrectMessage(folderName)) {
+            return messageInputNotCorrect;
+        }
         Long userId = user.getId();
         FolderDto folderDto = folderService.getFolderByName(folderName, userId);
         if (folderDto == null) {

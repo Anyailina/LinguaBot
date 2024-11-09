@@ -5,14 +5,25 @@ import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.action.ActionHandler;
 import org.annill.linguabot.model.cache.SessionCache;
+import org.annill.linguabot.model.dto.FolderDto;
+import org.annill.linguabot.service.FolderService;
+import org.annill.linguabot.ui.FolderInlineKeyBoard;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 @Component
 @AllArgsConstructor
 public class AddWordActionHandler implements ActionHandler {
     private Cache cache;
+    private FolderService folderService;
+    private FolderInlineKeyBoard folderInlineKeyBoard;
+    @Value("${folder.select}")
+    private String selectFolder;
 
     @Override
     public ActionEnum getType() {
@@ -20,10 +31,22 @@ public class AddWordActionHandler implements ActionHandler {
     }
 
     @Override
-    public String process(String text, User user) {
+    public BotApiMethod<?> process(String command, User user) {
+        Page<FolderDto> page = folderService.getPageFolderByUserChatId(user.getId(), 0, folderInlineKeyBoard.getPageSize());
         SessionCache sessionCache = new SessionCache()
-                .setResponse(AddWordResponseEnum.NAME_FOLDER);
+                .setResponse(AddWordResponseEnum.NAME_FOLDER)
+                .setCurrentPage(0);
+
         cache.put(user.getId(), sessionCache);
-        return AddWordResponseEnum.GET_NAME_FOLDER.getMessage();
+
+        return createNewSendMessage(user, page);
+    }
+
+    private SendMessage createNewSendMessage(User user, Page<FolderDto> folderDto) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(user.getId());
+        sendMessage.setText(selectFolder);
+        sendMessage.setReplyMarkup(folderInlineKeyBoard.createInlineKeyboard(folderDto));
+        return sendMessage;
     }
 }

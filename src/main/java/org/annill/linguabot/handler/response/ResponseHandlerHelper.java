@@ -1,7 +1,6 @@
 package org.annill.linguabot.handler.response;
 
 import org.annill.linguabot.enums.response.ResponseEnum;
-import org.annill.linguabot.enums.response.impl.DefaultEnum;
 import org.annill.linguabot.handler.response.impl.DefaultState;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -24,6 +23,6 @@ public class ResponseHandlerHelper {
     }
 
     public ResponseHandler findHandler(ResponseEnum responseEnum) {
-        return responseHandlerMap.getOrDefault(responseEnum,new DefaultState());
+        return responseHandlerMap.getOrDefault(responseEnum, new DefaultState());
     }
 }
