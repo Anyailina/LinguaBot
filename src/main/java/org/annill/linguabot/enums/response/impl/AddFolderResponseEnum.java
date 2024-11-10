@@ -10,8 +10,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public enum AddFolderResponseEnum implements ResponseEnum {
     NAME_FOLDER("Напишите имя папки"),
-    ADD_FOLDER("Папка добавлена"),
-    EXIST_FOLDER("Папка существует");
+    ADD_FOLDER("Папка добавлена");
     private static final HashMap<String, AddFolderResponseEnum> map = new HashMap<>();
 
     static {

@@ -10,10 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 
 import java.util.Objects;
 
@@ -27,9 +25,8 @@ public class FolderNavigationHandler {
     @Value("${folder.select}")
     private String folderSelect;
 
-    public BotApiMethod<?> changePage(CallbackQuery callbackQuery) {
+    public SendMessage changePage(CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
-        MaybeInaccessibleMessage message = callbackQuery.getMessage();
         SessionCache sessionCache = Objects.requireNonNull(cache.get(chatId, SessionCache.class));
 
         int currentPage = sessionCache.getCurrentPage();
@@ -45,16 +42,14 @@ public class FolderNavigationHandler {
 
         Page<FolderDto> newPage = folderService.getPageFolderByUserChatId(chatId, currentPage, totalPages);
 
-        return createEditMessage(chatId, message, newPage);
+        return createSendMessage(chatId, newPage);
     }
 
-    private EditMessageText createEditMessage(Long chatId, MaybeInaccessibleMessage message, Page<FolderDto> newPage) {
-        EditMessageText editMessage = new EditMessageText();
-        editMessage.setChatId(chatId.toString());
-        editMessage.setMessageId(message.getMessageId());
-        editMessage.setText(folderSelect);
-        editMessage.setReplyMarkup(folderInlineKeyBoard.createInlineKeyboard(newPage));
-        return editMessage;
-
+    private SendMessage createSendMessage(Long chatId, Page<FolderDto> newPage) {
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId.toString());
+        sendMessage.setText(folderSelect);
+        sendMessage.setReplyMarkup(folderInlineKeyBoard.createInlineKeyboard(newPage));
+        return sendMessage;
     }
 }

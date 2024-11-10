@@ -7,11 +7,12 @@ spring:
     url: jdbc:postgresql://localhost:5433/linguabot
     username: myuser
     password: mypassword
+    hikari:
+      max-lifetime: 50000
   application:
     name: LinguaBot
   config:
     import: message.yaml
-
   jpa:
     hibernate:
       ddl-auto: none

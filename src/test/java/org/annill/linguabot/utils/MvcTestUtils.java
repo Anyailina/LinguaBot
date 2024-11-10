@@ -3,6 +3,7 @@ package org.annill.linguabot.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,18 +26,18 @@ public class MvcTestUtils {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
 
-    public SendMessage getSendMessage(String command) throws Exception {
+    public TelegramMessage getSendMessage(String command) throws Exception {
         String updateJson = mockUpdateFactory.createMockUpdateJson(command);
         MvcResult mvcResult = performWebhookTest(updateJson);
         return getSendMessageFromResult(mvcResult);
     }
 
-    private SendMessage getSendMessageFromResult(MvcResult result) throws IOException {
+    private TelegramMessage getSendMessageFromResult(MvcResult result) throws IOException {
         String sendMessageAsString = new String(result.getResponse().getContentAsByteArray(), StandardCharsets.UTF_8);
-        return objectMapper.readValue(sendMessageAsString, SendMessage.class);
+        return objectMapper.readValue(sendMessageAsString, TelegramMessage.class);
     }
 
-    private MvcResult performWebhookTest(String updateToJson) throws Exception {
+    public MvcResult performWebhookTest(String updateToJson) throws Exception {
         return mockMvc.perform(post("/webhookTest")
                         .content(updateToJson)
                         .contentType(MediaType.APPLICATION_JSON.getMediaType()))

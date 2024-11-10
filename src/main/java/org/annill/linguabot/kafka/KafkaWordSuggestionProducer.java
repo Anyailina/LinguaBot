@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class KafkaProducer {
+public class KafkaWordSuggestionProducer {
     @Value("${topic.name}")
     private String topicName;
     private KafkaTemplate<String, WordTranslation> wordKafkaTemplate;

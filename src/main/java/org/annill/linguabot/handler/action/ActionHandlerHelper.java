@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.util.HashMap;
@@ -28,7 +28,7 @@ public class ActionHandlerHelper {
         listAction.forEach(actionHandler -> actionHandlersMap.put(actionHandler.getType(), actionHandler));
     }
 
-    public BotApiMethod<?> process(String text, User user) {
+    public SendMessage process(String text, User user) {
         ActionHandler action = actionHandlersMap.get(ActionEnum.fromText(text));
         return action.process(text, user);
     }

@@ -30,15 +30,16 @@ public class AddFolderResponseHandler implements ResponseHandler {
 
     @Override
     public String process(String text, User user) {
-        if (!RegexPattern.isCorrectMessage(text)) {
+        if (!RegexPattern.isMessageContainsOnlyLetters(text)) {
             return messageInputNotCorrect;
         }
-
         Long userId = user.getId();
-        FolderDto folderDto = folderService.addFolder(text, user.getId());
-        if (folderDto == null) {
-            return AddFolderResponseEnum.EXIST_FOLDER.getMessage();
+        FolderDto folderDto = folderService.getFolderByName(text, user.getId());
+
+        if (folderDto != null) {
+            return messageExists;
         }
+        folderService.addFolder(text, user.getId());
         cache.evict(userId);
         return AddFolderResponseEnum.ADD_FOLDER.getMessage();
     }

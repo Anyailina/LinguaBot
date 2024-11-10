@@ -30,7 +30,7 @@ public class FolderNameState implements ResponseHandler {
 
     @Override
     public String process(String folderName, User user) {
-        if (!RegexPattern.isCorrectMessage(folderName)) {
+        if (!RegexPattern.isMessageContainsOnlyLetters(folderName)) {
             return messageInputNotCorrect;
         }
         Long userId = user.getId();

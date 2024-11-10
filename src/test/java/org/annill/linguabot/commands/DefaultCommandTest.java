@@ -1,6 +1,7 @@
 package org.annill.linguabot.commands;
 
 import org.annill.linguabot.configuration.TestConfiguration;
+import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.utils.MvcTestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class DefaultCommandTest {
 
     @Test
     void defaultCommandTest() throws Exception {
-        SendMessage sendMessage = mvcTestUtils.getSendMessage("jfsdl");
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage("jfsdl");
         Assertions.assertEquals(defaultMessage, sendMessage.getText());
     }
 }

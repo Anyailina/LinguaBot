@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
-import org.annill.linguabot.kafka.KafkaProducer;
+import org.annill.linguabot.kafka.KafkaWordSuggestionProducer;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
@@ -18,7 +18,7 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class AddWordState implements ResponseHandler {
-    private final KafkaProducer kafkaProducer;
+    private final KafkaWordSuggestionProducer kafkaWordSuggestionProducer;
     private final WordService wordService;
     private final Cache cache;
     @Value("${message.mistake.translate-exists}")
@@ -34,7 +34,7 @@ public class AddWordState implements ResponseHandler {
 
     @Override
     public String process(String translation, User user) {
-        if (!RegexPattern.isCorrectMessage(translation)) {
+        if (!RegexPattern.isMessageContainsOnlyLetters(translation)) {
             return messageInputNotCorrect;
         }
         Long userId = user.getId();
@@ -47,7 +47,7 @@ public class AddWordState implements ResponseHandler {
         }
 
         wordService.addWord(folderIds, word, translation, userId);
-        kafkaProducer.sendMessage(word, translation);
+        kafkaWordSuggestionProducer.sendMessage(word, translation);
         cache.evict(userId);
 
         return AddWordResponseEnum.TRANSLATION.getMessage();

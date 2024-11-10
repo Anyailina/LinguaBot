@@ -10,7 +10,6 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class WordQueryService {
-
     private EntityManager entityManager;
 
     public Word getWordByNameAndTranslation(String word, String translation) {

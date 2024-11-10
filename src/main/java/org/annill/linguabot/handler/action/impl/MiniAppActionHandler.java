@@ -4,7 +4,6 @@ import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.handler.action.ActionHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -28,7 +27,7 @@ public class MiniAppActionHandler implements ActionHandler {
     }
 
     @Override
-    public BotApiMethod<?> process(String text, User user) {
+    public SendMessage process(String text, User user) {
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
 

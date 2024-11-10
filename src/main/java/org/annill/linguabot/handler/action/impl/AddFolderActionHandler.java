@@ -8,7 +8,6 @@ import org.annill.linguabot.handler.action.ActionHandler;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -23,7 +22,7 @@ public class AddFolderActionHandler implements ActionHandler {
     }
 
     @Override
-    public BotApiMethod<?> process(String text, User user) {
+    public SendMessage process(String text, User user) {
         SessionCache sessionCache = new SessionCache()
                 .setResponse(AddFolderResponseEnum.NAME_FOLDER);
         Long userId = user.getId();

@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
-import org.annill.linguabot.kafka.KafkaProducer;
+import org.annill.linguabot.kafka.KafkaWordSuggestionProducer;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
+import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
@@ -19,28 +20,32 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class AddWordWithSuggestionState implements ResponseHandler {
-    private final KafkaProducer kafkaProducer;
+    private final KafkaWordSuggestionProducer kafkaWordSuggestionProducer;
     private final WordService wordService;
     private final Cache cache;
     @Value("${message.mistake.incorrect-number}")
     private String messageIncorrectNumber;
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
-
+    @Value("${message.not_correct-input-with-numbers}")
+    private String messageIncorrectInput;
     @Override
     public ResponseEnum getType() {
         return AddWordResponseEnum.SUGGEST_TRANSLATION;
     }
 
-    public String process(String text, User user) {
+    public String process(String translation, User user) {
+        if (!RegexPattern.isMessageContainsLettersAndNumbers(translation)) {
+            return messageIncorrectInput;
+        }
         Long userId = user.getId();
         SessionCache sessionCache = getSessionCache(userId);
         Long folderIds = Objects.requireNonNull(sessionCache).getCurrentFolderId();
         String word = sessionCache.getWord();
 
         List<WordSuggestionDto> suggestions = sessionCache.getWordSuggestions();
-        if (isNumeric(text)) {
-            int suggestionIndex = Integer.parseInt(text);
+        if (isNumeric(translation)) {
+            int suggestionIndex = Integer.parseInt(translation);
 
             if (isInvalidSuggestionIndex(suggestionIndex, suggestions.size())) {
                 return messageIncorrectNumber;
@@ -53,12 +58,12 @@ public class AddWordWithSuggestionState implements ResponseHandler {
             return AddWordResponseEnum.TRANSLATION.getMessage();
         }
 
-        if (wordService.existsSameWord(folderIds, word, text, userId)) {
+        if (wordService.existsSameWord(folderIds, word, translation, userId)) {
             return messageTranslationExists;
         }
 
-        kafkaProducer.sendMessage(sessionCache.getWord(), text);
-        addWordToService(folderIds, sessionCache.getWord(), text, userId);
+        kafkaWordSuggestionProducer.sendMessage(sessionCache.getWord(), translation);
+        addWordToService(folderIds, sessionCache.getWord(), translation, userId);
         cache.evict(user.getId());
 
         return AddWordResponseEnum.TRANSLATION.getMessage();

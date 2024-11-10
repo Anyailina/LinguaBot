@@ -3,8 +3,10 @@ package org.annill.linguabot.commands;
 
 import jakarta.persistence.EntityManager;
 import org.annill.linguabot.configuration.TestConfiguration;
+import org.annill.linguabot.container.PostgresContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.User;
+import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.repository.UserRepository;
 import org.annill.linguabot.service.UserService;
 import org.annill.linguabot.update.MockUpdateFactory;
@@ -17,15 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.TestPropertySource;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 
@@ -37,9 +34,8 @@ import java.util.List;
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:message.yaml")
-public class StartCommandTest {
-    @Container
-    private static final PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+public class StartCommandTest extends PostgresContainer {
+    ;
     @Autowired
     private EntityManager entityManager;
     @Autowired
@@ -55,12 +51,6 @@ public class StartCommandTest {
     @Value("${message.user-registered}")
     private String userRegisteredMessage;
 
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
 
     @AfterEach
     void tearDown() {
@@ -69,7 +59,7 @@ public class StartCommandTest {
 
     @Test
     void startCommandIfUserNotExistTest() throws Exception {
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
 
         List<User> results = getUserByChatId(mockUpdateFactory.getUserId());
         Assertions.assertNotNull(results);
@@ -82,7 +72,7 @@ public class StartCommandTest {
         Update update = mockUpdateFactory.createMockUpdate(ActionEnum.START.getCommandText());
         userService.addUser(update.getMessage().getFrom());
 
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
 
         List<User> results = getUserByChatId(mockUpdateFactory.getUserId());
         Assertions.assertEquals(results.size(), 1);

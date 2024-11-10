@@ -8,7 +8,9 @@ import org.springframework.stereotype.Component;
 @Getter
 public class WordsMessageUtils {
     private final String nameFolder = "Животные";
+    private final Long idFolder = 6L;
     private final String word = "Cat";
+    private final String notExistsFolder = "kc";
     private final String translation = "Кот";
     private final String anotherTranslation = "Котенок";
     private final String wordSuggestion = "Cat";
@@ -25,9 +27,13 @@ public class WordsMessageUtils {
     private String messageFolderNotExits;
     @Value("${message.mistake.word-suggestion-exists}")
     private String messageWordSuggestionExists;
-    @Value("${message.mistake.incorrect-number}")
-    private String messageIncorrectNumber;
+    @Value("${message.not_correct-input-with-numbers}")
+    private String messageIncorrectInput;
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
+    @Value("${message.not-exists}")
+    private String messageNotExistsFolder;
+    @Value("${message.not_correct-input}")
+    private String messageNotCorrectInput;
 
 }

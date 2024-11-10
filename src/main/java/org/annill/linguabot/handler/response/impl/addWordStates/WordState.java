@@ -40,7 +40,7 @@ public class WordState implements ResponseHandler {
 
     @Override
     public String process(String word, User user) {
-        if (!RegexPattern.isCorrectMessage(word)) {
+        if (!RegexPattern.isMessageContainsOnlyLetters(word)) {
             return messageInputNotCorrect;
         }
         Long userId = user.getId();

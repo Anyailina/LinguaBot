@@ -1,14 +1,20 @@
 package org.annill.linguabot.commands;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import jakarta.transaction.Transactional;
 import org.annill.linguabot.FolderActionTest;
+import org.annill.linguabot.WordActionTest;
 import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.configuration.WireMockConfiguration;
+import org.annill.linguabot.container.PostgresContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
+import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.model.entity.Word;
+import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.repository.FolderRepository;
 import org.annill.linguabot.repository.WordRepository;
+import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.annill.linguabot.utils.MvcTestUtils;
@@ -22,15 +28,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
+
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonGenerator;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +46,8 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 @Testcontainers
 @AutoConfigureMockMvc
 @SpringBootTest
-public class AddWordWithSuggestionTest {
-    @Container
-    private static final PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+@Transactional
+public class AddWordWithSuggestionTest extends PostgresContainer {
     @Autowired
     private FolderRepository folderRepository;
     @Autowired
@@ -68,13 +68,10 @@ public class AddWordWithSuggestionTest {
     private FolderActionTest folderActionTest;
     @Autowired
     private Cache cache;
-
-    @DynamicPropertySource
-    static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-    }
+    @Autowired
+    private FolderService folderService;
+    @Autowired
+    private WordActionTest wordActionTest;
 
 
     @BeforeEach
@@ -86,6 +83,7 @@ public class AddWordWithSuggestionTest {
         stubFor(post(urlEqualTo("/words"))
                 .willReturn(aResponse()
                         .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
                         .withBody(getWordsSuggestion()))
         );
     }
@@ -99,21 +97,23 @@ public class AddWordWithSuggestionTest {
     }
 
     @Test
+    @Transactional
     void addWordExists() throws Exception {
         performAddWord();
         String folderName = wordsMessageUtils.getNameFolder();
+        FolderDto folderDto = folderService.getFolderByName(folderName,mockUpdateFactory.getUserId());
 
-        wordService.addWord(folderName, wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
+        wordService.addWord(folderDto.getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
-        SendMessage sendMessageTranslation = mvcTestUtils.getSendMessage(wordsMessageUtils.getTranslation());
+        TelegramMessage telegramMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getTranslation());
 
-        Assertions.assertEquals(wordsMessageUtils.getMessageTranslationExists(), sendMessageTranslation.getText());
+        Assertions.assertEquals(wordsMessageUtils.getMessageTranslationExists(), telegramMessage.getText());
     }
 
     @Test
     void addWordWithCorrectNumber() throws Exception {
         performAddWord();
-        SendMessage sendMessage = mvcTestUtils.getSendMessage("1");
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage("1");
 
         Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
         Assertions.assertNotNull(word);
@@ -123,17 +123,17 @@ public class AddWordWithSuggestionTest {
     @Test
     void addWordWithIncorrectNumber() throws Exception {
         performAddWord();
-        SendMessage sendMessage = mvcTestUtils.getSendMessage("-10");
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage("-10");
 
         Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
         Assertions.assertNull(word);
-        Assertions.assertEquals(wordsMessageUtils.getMessageIncorrectNumber(), sendMessage.getText());
+        Assertions.assertEquals(wordsMessageUtils.getMessageIncorrectInput(), sendMessage.getText());
     }
 
     @Test
-    void addWordWithAnotherTranslation() throws Exception {
+    void addWordWithNotSuggestionTranslation() throws Exception {
         performAddWord();
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getAnotherTranslation());
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getAnotherTranslation());
 
         Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getAnotherTranslation());
         Assertions.assertNotNull(word);
@@ -142,8 +142,8 @@ public class AddWordWithSuggestionTest {
 
     private void performAddWord() throws Exception {
         String folderName = wordsMessageUtils.getNameFolder();
-        folderActionTest.performNameFolderTest(ActionEnum.ADD_WORD.getCommandText());
-        folderActionTest.perFormSelectExistFolderTest(folderName);
+        folderActionTest.perFormFolderList(folderName);
+        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
 
         List<WordSuggestionDto> wordsSuggestion = getSuggestionWordsByPhrase();
         List<Word> words = wordQueryService.getsWordByName(wordsMessageUtils.getWord());
@@ -163,7 +163,7 @@ public class AddWordWithSuggestionTest {
     }
 
     private void verifySendMessage(String expectedMessage) throws Exception {
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getWord());
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getWord());
         Assertions.assertEquals(expectedMessage, sendMessage.getText());
     }
 

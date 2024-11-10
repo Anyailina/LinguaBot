@@ -5,6 +5,8 @@ message:
     "Нажмите кнопку, чтобы открыть мини-приложение."
   not_correct-input:
     "Папки и слова должны содержать только буквы"
+  not_correct-input-with-numbers:
+    "Либо цифра предложенного варианта либо свое слово"
   not-correct-command:
     "Нет такой команды"
   name-folder:
@@ -17,6 +19,8 @@ message:
     "Добро пожаловать"
   user-registered:
     "Вы уже зарегистрированы"
+  not-exists:
+    "Папок нет"
 
   mistake:
     folder-exists:

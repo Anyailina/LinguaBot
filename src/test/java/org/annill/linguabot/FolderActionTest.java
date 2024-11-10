@@ -1,30 +1,53 @@
 package org.annill.linguabot;
 
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.annill.linguabot.enums.action.ActionEnum;
+import org.annill.linguabot.model.dto.FolderDto;
+import org.annill.linguabot.model.entity.Folder;
+import org.annill.linguabot.model.entity.User;
+import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.service.FolderService;
+import org.annill.linguabot.ui.FolderInlineKeyBoard;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.annill.linguabot.utils.MvcTestUtils;
-import org.annill.linguabot.utils.WordsMessageUtils;
 import org.junit.jupiter.api.Assertions;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Component
 @AllArgsConstructor
 public class FolderActionTest {
     private final MvcTestUtils mvcTestUtils;
-    private final WordsMessageUtils wordsMessageUtils;
     private final FolderService folderService;
     private final MockUpdateFactory mockUpdateFactory;
+    private final FolderInlineKeyBoard folderInlineKeyBoard;
+    private EntityManager entityManager;
 
-    public void performNameFolderTest(String command) throws Exception {
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(command);
-        Assertions.assertEquals(wordsMessageUtils.getMessageNameFolder(), sendMessage.getText());
+    public void perFormFolderList(String folderName) throws Exception {
+        addFolder(folderName);
+        Page<FolderDto> folderDto = folderService.getPageFolderByUserChatId(mockUpdateFactory.getUserId(), 0, folderInlineKeyBoard.getPageSize());
+        InlineKeyboardMarkup inlineKeyboardMarkup = folderInlineKeyBoard.createInlineKeyboard(folderDto);
+        TelegramMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.ADD_WORD.getCommandText());
+
+        String actualText = inlineKeyboardMarkup.getKeyboard().get(0).get(0).getText();
+        String expectedText = sendMessage.getReplyMarkup().getInlineKeyboard().get(0).get(0).getText();
+
+        Assertions.assertEquals(actualText, expectedText);
     }
 
-    public void perFormSelectExistFolderTest(String folderName) throws Exception {
-        folderService.addFolder(folderName, mockUpdateFactory.getUserId());
-        SendMessage sendMessage = mvcTestUtils.getSendMessage(folderName);
-        Assertions.assertEquals(wordsMessageUtils.getMessageSendWord(), sendMessage.getText());
+    @Transactional
+    public void addFolder(String folderName) {
+        User user = entityManager.createQuery("select u from User u where u.chatId = :chatId", User.class)
+                .setParameter("chatId", mockUpdateFactory.getUserId())
+                .getSingleResult();
+        Folder folder = new Folder(folderName,user);
+
+        entityManager.persist(folder);
     }
 }

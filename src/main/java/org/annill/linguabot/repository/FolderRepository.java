@@ -11,8 +11,7 @@ import java.util.Optional;
 
 public interface FolderRepository extends JpaRepository<Folder, Long> {
 
-    @Query("SELECT f FROM Folder f LEFT JOIN FETCH f.words  WHERE f.name = :name AND f.user.chatId = :chatId")
-    Optional<Folder> findByNameAndUserChatId(@Param("name") String name, @Param("chatId") Long chatId);
+    Optional<Folder> findByNameAndUserChatId(String name,Long user_chatId);
 
     Optional<Folder> findByIdAndUserChatId(Long id, Long user_chatId);
 
