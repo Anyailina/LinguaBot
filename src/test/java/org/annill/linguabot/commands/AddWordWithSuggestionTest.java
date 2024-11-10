@@ -28,8 +28,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.context.annotation.Import;
-
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonGenerator;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,7 +99,7 @@ public class AddWordWithSuggestionTest extends PostgresContainer {
     void addWordExists() throws Exception {
         performAddWord();
         String folderName = wordsMessageUtils.getNameFolder();
-        FolderDto folderDto = folderService.getFolderByName(folderName,mockUpdateFactory.getUserId());
+        FolderDto folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
 
         wordService.addWord(folderDto.getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
@@ -143,7 +141,7 @@ public class AddWordWithSuggestionTest extends PostgresContainer {
     private void performAddWord() throws Exception {
         String folderName = wordsMessageUtils.getNameFolder();
         folderActionTest.perFormFolderList(folderName);
-        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
+        wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
 
         List<WordSuggestionDto> wordsSuggestion = getSuggestionWordsByPhrase();
         List<Word> words = wordQueryService.getsWordByName(wordsMessageUtils.getWord());

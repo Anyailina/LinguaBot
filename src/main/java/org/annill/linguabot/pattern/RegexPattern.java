@@ -8,6 +8,7 @@ public class RegexPattern {
     public static boolean isMessageContainsOnlyLetters(String text) {
         return text.matches(REGEX_PATTERN_LETTERS);
     }
+
     public static boolean isMessageContainsLettersAndNumbers(String text) {
         return text.matches(REGEX_PATTERN_LETTERS_NUMBERS);
     }

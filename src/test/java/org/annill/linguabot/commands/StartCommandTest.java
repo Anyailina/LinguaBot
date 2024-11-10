@@ -20,7 +20,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -35,7 +34,6 @@ import java.util.List;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:message.yaml")
 public class StartCommandTest extends PostgresContainer {
-    ;
     @Autowired
     private EntityManager entityManager;
     @Autowired

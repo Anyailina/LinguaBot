@@ -8,7 +8,6 @@ import org.annill.linguabot.update.MockUpdateFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 import org.testcontainers.shaded.com.github.dockerjava.core.MediaType;
 

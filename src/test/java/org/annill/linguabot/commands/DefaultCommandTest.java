@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.TestPropertySource;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Import(value = {

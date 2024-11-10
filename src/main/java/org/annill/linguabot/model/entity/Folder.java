@@ -29,7 +29,7 @@ public class Folder {
     private Date createdAt;
     @Column(name = "update_at")
     private Date updateAt;
-    @OneToMany(mappedBy = "folder",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "folder", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     private List<Word> words;
 

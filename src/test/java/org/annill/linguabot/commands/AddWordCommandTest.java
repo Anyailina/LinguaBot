@@ -113,10 +113,10 @@ public class AddWordCommandTest extends PostgresContainer {
     void addWord() throws Exception {
         String folderName = wordsMessageUtils.getNameFolder();
         folderActionTest.perFormFolderList(folderName);
-        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
-        wordActionTest.equalsAssertion( wordsMessageUtils.getWord(),wordsMessageUtils.getMessageSendTranslation());
+        wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
+        wordActionTest.equalsAssertion(wordsMessageUtils.getWord(), wordsMessageUtils.getMessageSendTranslation());
 
-        wordActionTest.equalsAssertion( wordsMessageUtils.getTranslation(),wordsMessageUtils.getMessageWordAdded());
+        wordActionTest.equalsAssertion(wordsMessageUtils.getTranslation(), wordsMessageUtils.getMessageWordAdded());
 
         Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation());
         Assertions.assertNotNull(word);
@@ -127,29 +127,29 @@ public class AddWordCommandTest extends PostgresContainer {
 
         String folderName = wordsMessageUtils.getNameFolder();
         folderActionTest.perFormFolderList(folderName);
-        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
+        wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
 
-        wordActionTest.equalsAssertion( wordsMessageUtils.getWord(),wordsMessageUtils.getMessageSendTranslation());
-        FolderDto folderDto = folderService.getFolderByName(folderName,mockUpdateFactory.getUserId());
+        wordActionTest.equalsAssertion(wordsMessageUtils.getWord(), wordsMessageUtils.getMessageSendTranslation());
+        FolderDto folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
         wordService.addWord(folderDto.getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
-        wordActionTest.equalsAssertion( wordsMessageUtils.getTranslation(),wordsMessageUtils.getMessageTranslationExists());
+        wordActionTest.equalsAssertion(wordsMessageUtils.getTranslation(), wordsMessageUtils.getMessageTranslationExists());
     }
 
     @Test
     void addIncorrectWord() throws Exception {
         String folderName = wordsMessageUtils.getNameFolder();
         folderActionTest.perFormFolderList(folderName);
-        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
-        wordActionTest.equalsAssertion( "8430",wordsMessageUtils.getMessageNotCorrectInput());
+        wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
+        wordActionTest.equalsAssertion("8430", wordsMessageUtils.getMessageNotCorrectInput());
     }
 
     @Test
     void addIncorrectTranslation() throws Exception {
         String folderName = wordsMessageUtils.getNameFolder();
         folderActionTest.perFormFolderList(folderName);
-        wordActionTest.equalsAssertion(folderName,wordsMessageUtils.getMessageSendWord());
-        wordActionTest.equalsAssertion( wordsMessageUtils.getWord(),wordsMessageUtils.getMessageSendTranslation());
-        wordActionTest.equalsAssertion( "8430",wordsMessageUtils.getMessageNotCorrectInput());
+        wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
+        wordActionTest.equalsAssertion(wordsMessageUtils.getWord(), wordsMessageUtils.getMessageSendTranslation());
+        wordActionTest.equalsAssertion("8430", wordsMessageUtils.getMessageNotCorrectInput());
     }
 }

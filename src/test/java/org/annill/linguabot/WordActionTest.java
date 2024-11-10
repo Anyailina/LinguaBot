@@ -10,7 +10,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class WordActionTest {
     private MvcTestUtils mvcTestUtils;
-    public void equalsAssertion(String request , String expectedAnswer) throws Exception {
+
+    public void equalsAssertion(String request, String expectedAnswer) throws Exception {
         TelegramMessage telegramMessage = mvcTestUtils.getSendMessage(request);
         Assertions.assertEquals(expectedAnswer, telegramMessage.getText());
     }

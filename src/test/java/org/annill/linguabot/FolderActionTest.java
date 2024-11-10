@@ -17,9 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 @Component
 @AllArgsConstructor
 public class FolderActionTest {
@@ -46,7 +43,7 @@ public class FolderActionTest {
         User user = entityManager.createQuery("select u from User u where u.chatId = :chatId", User.class)
                 .setParameter("chatId", mockUpdateFactory.getUserId())
                 .getSingleResult();
-        Folder folder = new Folder(folderName,user);
+        Folder folder = new Folder(folderName, user);
 
         entityManager.persist(folder);
     }

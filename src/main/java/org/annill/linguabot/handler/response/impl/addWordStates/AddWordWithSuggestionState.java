@@ -29,6 +29,7 @@ public class AddWordWithSuggestionState implements ResponseHandler {
     private String messageTranslationExists;
     @Value("${message.not_correct-input-with-numbers}")
     private String messageIncorrectInput;
+
     @Override
     public ResponseEnum getType() {
         return AddWordResponseEnum.SUGGEST_TRANSLATION;
