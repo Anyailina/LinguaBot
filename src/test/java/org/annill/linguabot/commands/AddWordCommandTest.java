@@ -7,7 +7,7 @@ import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordActionTest;
 import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.configuration.WireMockConfiguration;
-import org.annill.linguabot.container.PostgresContainer;
+import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
@@ -29,21 +29,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.springframework.context.annotation.Import;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@Import(value = {
-        WireMockConfiguration.class
-})
-@Testcontainers
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
-public class AddWordCommandTest extends PostgresContainer {
+public class AddWordCommandTest extends AbstractTestContainer {
     @Autowired
     private FolderRepository folderRepository;
     @Autowired
