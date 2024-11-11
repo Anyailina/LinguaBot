@@ -1,10 +1,8 @@
 package org.annill.linguabot.commands;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import jakarta.transaction.Transactional;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordActionTest;
-import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
@@ -23,7 +21,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonGenerator;
@@ -31,12 +28,12 @@ import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingExcept
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @SpringBootTest
-@Transactional
 public class AddWordWithSuggestionTest extends AbstractTestContainer {
     @Autowired
     private FolderRepository folderRepository;
@@ -50,8 +47,6 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
     private MockUpdateFactory mockUpdateFactory;
     @Autowired
     private MvcTestUtils mvcTestUtils;
-    @Autowired
-    private WordQueryService wordQueryService;
     @Autowired
     private WordsMessageUtils wordsMessageUtils;
     @Autowired
@@ -87,7 +82,6 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
     }
 
     @Test
-    @Transactional
     void addWordExists() throws Exception {
         performAddWord();
         String folderName = wordsMessageUtils.getNameFolder();
@@ -105,8 +99,9 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
         performAddWord();
         TelegramMessage sendMessage = mvcTestUtils.getSendMessage("1");
 
-        Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
-        Assertions.assertNotNull(word);
+        Optional<Word> word = wordRepository.findFirstByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
+        Assertions.assertTrue(word.isPresent());
+
         Assertions.assertEquals(wordsMessageUtils.getMessageWordAdded(), sendMessage.getText());
     }
 
@@ -115,8 +110,9 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
         performAddWord();
         TelegramMessage sendMessage = mvcTestUtils.getSendMessage("-10");
 
-        Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
-        Assertions.assertNull(word);
+        Optional<Word> word = wordRepository.findFirstByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslationSuggestion());
+        Assertions.assertTrue(word.isEmpty());
+
         Assertions.assertEquals(wordsMessageUtils.getMessageIncorrectInput(), sendMessage.getText());
     }
 
@@ -125,8 +121,9 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
         performAddWord();
         TelegramMessage sendMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getAnotherTranslation());
 
-        Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getAnotherTranslation());
-        Assertions.assertNotNull(word);
+        Optional<Word> word = wordRepository.findFirstByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getAnotherTranslation());
+        Assertions.assertTrue(word.isPresent());
+
         Assertions.assertEquals(wordsMessageUtils.getMessageWordAdded(), sendMessage.getText());
     }
 
@@ -136,7 +133,7 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
         wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
 
         List<WordSuggestionDto> wordsSuggestion = getSuggestionWordsByPhrase();
-        List<Word> words = wordQueryService.getsWordByName(wordsMessageUtils.getWord());
+        List<Word> words = wordRepository.findAllByName(wordsMessageUtils.getWord());
 
         List<WordSuggestionDto> savedWords = getSavedWords(words);
         wordsSuggestion.removeAll(savedWords);

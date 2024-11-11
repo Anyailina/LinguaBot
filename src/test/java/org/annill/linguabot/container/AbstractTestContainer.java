@@ -2,6 +2,7 @@ package org.annill.linguabot.container;
 
 import org.annill.linguabot.configuration.ObjectMapperConfiguration;
 import org.annill.linguabot.configuration.WireMockConfiguration;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,7 +37,7 @@ public abstract class AbstractTestContainer {
     }
 
     @Autowired
-    Cache cache;
+    protected Cache cache;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
