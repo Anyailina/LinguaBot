@@ -1,7 +1,7 @@
 package org.annill.linguabot.commands;
 
 import jakarta.persistence.EntityManager;
-import org.annill.linguabot.container.PostgresContainer;
+import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.telegram.TelegramMessage;
@@ -17,15 +17,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 
 import java.util.List;
 
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource(locations = "classpath:message.yaml")
-public class AddFolderCommandTest extends PostgresContainer {
+public class AddFolderCommandTest extends AbstractTestContainer {
     @Autowired
     private EntityManager entityManager;
     @Autowired

@@ -6,8 +6,7 @@ import jakarta.transaction.Transactional;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordActionTest;
 import org.annill.linguabot.WordQueryService;
-import org.annill.linguabot.configuration.WireMockConfiguration;
-import org.annill.linguabot.container.PostgresContainer;
+import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
@@ -25,25 +24,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.Cache;
-import org.springframework.context.annotation.Import;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@Import(value = {
-        WireMockConfiguration.class
-})
-@Testcontainers
+
 @SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
-public class AddWordCommandTest extends PostgresContainer {
+public class AddWordCommandTest extends AbstractTestContainer {
     @Autowired
     private FolderRepository folderRepository;
     @Autowired
@@ -56,8 +47,6 @@ public class AddWordCommandTest extends PostgresContainer {
     private WordQueryService wordQueryService;
     @Autowired
     private FolderActionTest folderActionTest;
-    @Autowired
-    private Cache cache;
     @Autowired
     private WireMockServer wireMockServer;
     @Autowired
@@ -91,7 +80,6 @@ public class AddWordCommandTest extends PostgresContainer {
         wireMockServer.stop();
         wordRepository.deleteAll();
         folderRepository.deleteAll();
-        cache.clear();
     }
 
     @Test

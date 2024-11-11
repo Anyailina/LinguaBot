@@ -68,5 +68,4 @@ public class TelegramMessage {
             this.callbackData = callbackData;
         }
     }
-
 }

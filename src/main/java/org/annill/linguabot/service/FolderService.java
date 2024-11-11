@@ -66,4 +66,10 @@ public class FolderService {
                 .map(folderConverter::convert)
                 .orElse(null);
     }
+
+    public List<FolderDto> getFolders(Long userId) {
+        return folderRepository.findAllByUserId(userId).stream()
+                .map(folderConverter::convert)
+                .toList();
+    }
 }

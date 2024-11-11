@@ -5,8 +5,7 @@ import jakarta.transaction.Transactional;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordActionTest;
 import org.annill.linguabot.WordQueryService;
-import org.annill.linguabot.configuration.WireMockConfiguration;
-import org.annill.linguabot.container.PostgresContainer;
+import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
@@ -24,11 +23,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.Cache;
-import org.springframework.context.annotation.Import;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonGenerator;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -38,14 +34,9 @@ import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-@Import(value = {
-        WireMockConfiguration.class
-})
-@Testcontainers
-@AutoConfigureMockMvc
 @SpringBootTest
 @Transactional
-public class AddWordWithSuggestionTest extends PostgresContainer {
+public class AddWordWithSuggestionTest extends AbstractTestContainer {
     @Autowired
     private FolderRepository folderRepository;
     @Autowired
@@ -91,7 +82,6 @@ public class AddWordWithSuggestionTest extends PostgresContainer {
         wireMockServer.stop();
         wordRepository.deleteAll();
         folderRepository.deleteAll();
-        cache.clear();
     }
 
     @Test

@@ -34,11 +34,14 @@ public class WordService {
     }
 
     public List<WordDto> getWords(Long folderId, String phrase, Long userId) {
-        FolderDto folderDto = folderService.getFolderById(folderId, userId);
-        Folder folder = folderConverter.convert(folderDto);
-
-        return wordRepository.findByNameAndFolder(phrase, folder)
+        return wordRepository.findWordsByNameFolderIdAndUserChatId(phrase, folderId, userId)
                 .stream()
+                .map(wordConverter::convert)
+                .toList();
+    }
+
+    public List<WordDto> getWordsByFolderList(List<Long> folderIdList, Long userId) {
+        return wordRepository.findByFolderIdInAndFolderUserId(folderIdList, userId).stream()
                 .map(wordConverter::convert)
                 .toList();
     }
