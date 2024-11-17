@@ -47,7 +47,7 @@ spring:
 
 http:
   mini-app:
-    "https://t.me/your_bot_username?start=your_start_parameter"
+    "https://ae9b-95-55-28-12.ngrok-free.app?id="
 errorDetails:
   user-not-found:
     code: "USER_NOT_FOUND"
@@ -77,6 +77,18 @@ telegramBot:
     "EnglishBot"
   token:
     "7989664027:AAGv-d359PGiELNZqBSJCRJTgc5KPALZR-c"
+
+repeat:
+  times:
+    - 20
+    - 8
+    - 1
+    - 3
+    - 7
+
+quantity-word: 2
+quantity-repeat: 6
+
 
 cache:
   name: commands

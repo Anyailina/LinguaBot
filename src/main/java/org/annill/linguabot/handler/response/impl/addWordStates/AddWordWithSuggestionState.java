@@ -39,8 +39,8 @@ public class AddWordWithSuggestionState implements ResponseHandler {
         if (!RegexPattern.isMessageContainsLettersAndNumbers(translation)) {
             return messageIncorrectInput;
         }
-        Long userId = user.getId();
-        SessionCache sessionCache = getSessionCache(userId);
+        Long chatId = user.getId();
+        SessionCache sessionCache = getSessionCache(chatId);
         Long folderIds = Objects.requireNonNull(sessionCache).getCurrentFolderId();
         String word = sessionCache.getWord();
 
@@ -53,29 +53,29 @@ public class AddWordWithSuggestionState implements ResponseHandler {
             }
 
             WordSuggestionDto chosenSuggestion = suggestions.get(suggestionIndex - 1);
-            addWordToService(folderIds, chosenSuggestion.getPhrase(), chosenSuggestion.getTranslation(), userId);
-            cache.evict(user.getId());
+            addWordToService(folderIds, chosenSuggestion.getPhrase(), chosenSuggestion.getTranslation(), chatId);
+            cache.evict(chatId);
 
             return AddWordResponseEnum.TRANSLATION.getMessage();
         }
 
-        if (wordService.existsSameWord(folderIds, word, translation, userId)) {
+        if (wordService.existsSameWord(folderIds, word, translation, chatId)) {
             return messageTranslationExists;
         }
 
         kafkaWordSuggestionProducer.sendMessage(sessionCache.getWord(), translation);
-        addWordToService(folderIds, sessionCache.getWord(), translation, userId);
+        addWordToService(folderIds, sessionCache.getWord(), translation, chatId);
         cache.evict(user.getId());
 
         return AddWordResponseEnum.TRANSLATION.getMessage();
     }
 
-    private SessionCache getSessionCache(Long userId) {
-        return cache.get(userId, SessionCache.class);
+    private SessionCache getSessionCache(Long chatId) {
+        return cache.get(chatId, SessionCache.class);
     }
 
-    private void addWordToService(Long folderIds, String phrase, String translation, Long userId) {
-        wordService.addWord(folderIds, phrase, translation, userId);
+    private void addWordToService(Long folderIds, String phrase, String translation, Long chatId) {
+        wordService.addWord(folderIds, phrase, translation, chatId);
     }
 
     private boolean isNumeric(String text) {

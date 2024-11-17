@@ -3,15 +3,16 @@ package org.annill.linguabot.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
-@Data
+@Getter
+@Setter
 @Table(name = "words")
 @Accessors(chain = true)
 @Entity
@@ -23,26 +24,36 @@ public class Word {
     private Long id;
     private String name;
     private String translation;
+    @Column(name = "is_learned")
+    private Boolean isLearned;
+    @Column(name = "quantity_repeat")
+    private Integer quantityRepeat;
     @Column(name = "create_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "update_at")
-    private Date updateAt;
+    private LocalDateTime updateAt;
     @ManyToOne
     @JoinColumn(name = "folder_id")
     private Folder folder;
 
-    public Word(String name, String translation, Folder folder) {
+    public Word(String name, String translation, Boolean isLearned, Integer quantityRepeat, Folder folder) {
         this.name = name;
         this.translation = translation;
-        this.createdAt = Date.valueOf(LocalDate.now());
-        this.updateAt = Date.valueOf(LocalDate.now());
+        this.isLearned = isLearned;
+        this.quantityRepeat = quantityRepeat;
         this.folder = folder;
+        this.createdAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
     }
 
-    public Word(Long id, String name, String translation, Folder folder) {
+    public Word(Long id, String name, String translation, Boolean isLearned, Integer quantityRepeat, Folder folder) {
         this.id = id;
         this.name = name;
         this.translation = translation;
+        this.isLearned = isLearned;
+        this.quantityRepeat = quantityRepeat;
         this.folder = folder;
+        this.createdAt = LocalDateTime.now();
+        this.updateAt = LocalDateTime.now();
     }
 }

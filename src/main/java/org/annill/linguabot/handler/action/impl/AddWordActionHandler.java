@@ -12,8 +12,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
 @Component
@@ -33,16 +34,17 @@ public class AddWordActionHandler implements ActionHandler {
     }
 
     @Override
-    public SendMessage process(String command, User user) {
-        Page<FolderDto> page = folderService.getPageFolderByUserChatId(user.getId(), 0, folderInlineKeyBoard.getPageSize());
+    public BotApiMethod<?> process(String command, Update update) {
+        Long chatId = update.getMessage().getFrom().getId();
+        Page<FolderDto> page = folderService.getPageFolderByUserChatId(chatId, 0, folderInlineKeyBoard.getPageSize());
         SessionCache sessionCache = new SessionCache()
                 .setResponse(AddWordResponseEnum.NAME_FOLDER)
                 .setCurrentPage(0);
 
-        cache.put(user.getId(), sessionCache);
+        cache.put(chatId, sessionCache);
 
         SendMessage sendMessage = new SendMessage();
-        sendMessage.setChatId(user.getId());
+        sendMessage.setChatId(chatId);
 
         InlineKeyboardMarkup inlineKeyboard = folderInlineKeyBoard.createInlineKeyboard(page);
         if (inlineKeyboard.getKeyboard().isEmpty()) {
@@ -51,7 +53,6 @@ public class AddWordActionHandler implements ActionHandler {
             sendMessage.setText(selectFolder);
             sendMessage.setReplyMarkup(inlineKeyboard);
         }
-
         return sendMessage;
     }
 }

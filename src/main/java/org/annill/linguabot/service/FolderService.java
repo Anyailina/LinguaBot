@@ -61,8 +61,8 @@ public class FolderService {
 
     }
 
-    public FolderDto getFolderById(Long folderId, Long userId) {
-        return folderRepository.findByIdAndUserChatId(folderId, userId)
+    public FolderDto getFolderByUserChatId(Long folderId, Long chatId) {
+        return folderRepository.findByIdAndUserChatId(folderId, chatId)
                 .map(folderConverter::convert)
                 .orElse(null);
     }

@@ -1,13 +1,13 @@
 package org.annill.linguabot;
 
-import jakarta.persistence.EntityManager;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.entity.User;
 import org.annill.linguabot.model.telegram.TelegramMessage;
+import org.annill.linguabot.repository.FolderRepository;
+import org.annill.linguabot.repository.UserRepository;
 import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.ui.FolderInlineKeyBoard;
 import org.annill.linguabot.update.MockUpdateFactory;
@@ -24,7 +24,8 @@ public class FolderActionTest {
     private final FolderService folderService;
     private final MockUpdateFactory mockUpdateFactory;
     private final FolderInlineKeyBoard folderInlineKeyBoard;
-    private EntityManager entityManager;
+    private final UserRepository userRepository;
+    private final FolderRepository folderRepository;
 
     public void perFormFolderList(String folderName) throws Exception {
         addFolder(folderName);
@@ -38,13 +39,10 @@ public class FolderActionTest {
         Assertions.assertEquals(actualText, expectedText);
     }
 
-    @Transactional
     public void addFolder(String folderName) {
-        User user = entityManager.createQuery("select u from User u where u.chatId = :chatId", User.class)
-                .setParameter("chatId", mockUpdateFactory.getUserId())
-                .getSingleResult();
+        User user = userRepository.findByChatId(mockUpdateFactory.getUserId()).get();
         Folder folder = new Folder(folderName, user);
 
-        entityManager.persist(folder);
+        folderRepository.save(folder);
     }
 }

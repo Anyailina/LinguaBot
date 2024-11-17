@@ -17,8 +17,19 @@ public class WordController {
 
     @SneakyThrows
     @PostMapping("/user")
-    public ResponseEntity<List<WordDto>> getFolderByUserId(@RequestParam Long id, @RequestBody List<Long> folderIds) {
-        List<WordDto> wordDtoList = wordService.getWordsByFolderList(folderIds, id);
-        return wordDtoList.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(wordDtoList);
+    public ResponseEntity<List<WordDto>> getNewWordsByFolderByUserId(@RequestParam Long id, @RequestBody List<Long> folderIds) {
+        List<WordDto> wordDtoList = wordService.getNewWords(folderIds, id);
+        return ResponseEntity.ok(wordDtoList);
+    }
+
+    @PutMapping
+    public void changeWordsLearnedByUserId(@RequestBody List<WordDto> words) {
+        wordService.updateWords(words);
+    }
+
+    @PostMapping("/repeat/user")
+    public ResponseEntity<List<WordDto>> getRepeatWordsByFolderByUserId(@RequestParam Long id, @RequestBody List<Long> folderIds) {
+        List<WordDto> wordDtoList = wordService.getWordsForRepeat(folderIds, id);
+        return ResponseEntity.ok(wordDtoList);
     }
 }

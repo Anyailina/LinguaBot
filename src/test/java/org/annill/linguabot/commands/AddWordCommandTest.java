@@ -2,10 +2,8 @@ package org.annill.linguabot.commands;
 
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import jakarta.transaction.Transactional;
 import org.annill.linguabot.FolderActionTest;
 import org.annill.linguabot.WordActionTest;
-import org.annill.linguabot.WordQueryService;
 import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.dto.FolderDto;
@@ -13,6 +11,7 @@ import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.model.entity.Word;
 import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.repository.FolderRepository;
+import org.annill.linguabot.repository.UserRepository;
 import org.annill.linguabot.repository.WordRepository;
 import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.service.WordService;
@@ -25,15 +24,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.Cache;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
-
 @SpringBootTest
-@Transactional
 public class AddWordCommandTest extends AbstractTestContainer {
     @Autowired
     private FolderRepository folderRepository;
@@ -44,9 +43,9 @@ public class AddWordCommandTest extends AbstractTestContainer {
     @Autowired
     private WordsMessageUtils wordsMessageUtils;
     @Autowired
-    private WordQueryService wordQueryService;
-    @Autowired
     private FolderActionTest folderActionTest;
+    @Autowired
+    private Cache cache;
     @Autowired
     private WireMockServer wireMockServer;
     @Autowired
@@ -57,6 +56,8 @@ public class AddWordCommandTest extends AbstractTestContainer {
     private MockUpdateFactory mockUpdateFactory;
     @Autowired
     private FolderService folderService;
+    @Autowired
+    private UserRepository userRepository;
 
 
     @BeforeEach
@@ -80,6 +81,8 @@ public class AddWordCommandTest extends AbstractTestContainer {
         wireMockServer.stop();
         wordRepository.deleteAll();
         folderRepository.deleteAll();
+        userRepository.deleteAll();
+        cache.clear();
     }
 
     @Test
@@ -106,8 +109,8 @@ public class AddWordCommandTest extends AbstractTestContainer {
 
         wordActionTest.equalsAssertion(wordsMessageUtils.getTranslation(), wordsMessageUtils.getMessageWordAdded());
 
-        Word word = wordQueryService.getWordByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation());
-        Assertions.assertNotNull(word);
+        Optional<Word> word = wordRepository.findFirstByNameAndTranslation(wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation());
+        Assertions.assertTrue(word.isPresent());
     }
 
     @Test

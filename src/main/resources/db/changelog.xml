@@ -9,4 +9,6 @@
     <include file="sql/V3_create_word.sql" relativeToChangelogFile="true"/>
     <include file="sql/V4_create_word_suggestion.sql" relativeToChangelogFile="true"/>
     <include file="sql/V5_update_user.sql" relativeToChangelogFile="true"/>
+    <include file="sql/V6_update_word.sql" relativeToChangelogFile="true"/>
+    <include file="sql/V7_update_word.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

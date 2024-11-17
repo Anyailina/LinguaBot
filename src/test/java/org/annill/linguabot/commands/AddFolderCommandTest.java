@@ -1,11 +1,11 @@
 package org.annill.linguabot.commands;
 
-import jakarta.persistence.EntityManager;
 import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.Folder;
 import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.repository.FolderRepository;
+import org.annill.linguabot.repository.UserRepository;
 import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.update.MockUpdateFactory;
 import org.annill.linguabot.utils.MvcTestUtils;
@@ -15,17 +15,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
 
 @SpringBootTest
-@AutoConfigureMockMvc
 public class AddFolderCommandTest extends AbstractTestContainer {
-    @Autowired
-    private EntityManager entityManager;
     @Autowired
     private FolderRepository folderRepository;
     @Autowired
@@ -36,10 +32,13 @@ public class AddFolderCommandTest extends AbstractTestContainer {
     private MvcTestUtils mvcTestUtils;
     @Autowired
     private WordsMessageUtils wordsMessageUtils;
+    @Autowired
+    private UserRepository userRepository;
 
     @AfterEach
     void tearDown() {
         folderRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @BeforeEach
@@ -52,9 +51,12 @@ public class AddFolderCommandTest extends AbstractTestContainer {
         performAddFolderTest();
         String folderName = wordsMessageUtils.getNameFolder();
         TelegramMessage sendMessageFolderExists = mvcTestUtils.getSendMessage(folderName);
-        List<Folder> folders = getFoldersByName(folderName);
-        Assertions.assertEquals(wordsMessageUtils.getMessageFolderAdded(), sendMessageFolderExists.getText());
+
+        List<Folder> folders = folderRepository.findAll();
         Assertions.assertEquals(1, folders.size());
+        Assertions.assertEquals(folderName, folders.get(0).getName());
+
+        Assertions.assertEquals(wordsMessageUtils.getMessageFolderAdded(), sendMessageFolderExists.getText());
     }
 
     @Test
@@ -81,12 +83,5 @@ public class AddFolderCommandTest extends AbstractTestContainer {
         String expectedMessage = wordsMessageUtils.getMessageNameFolder();
         TelegramMessage sendMessageNameFolder = mvcTestUtils.getSendMessage(ActionEnum.ADD_FOLDER.getCommandText());
         Assertions.assertEquals(expectedMessage, sendMessageNameFolder.getText());
-    }
-
-
-    private List<Folder> getFoldersByName(String name) {
-        return entityManager.createQuery("select f from Folder f where f.name = :name", Folder.class)
-                .setParameter("name", name)
-                .getResultList();
     }
 }

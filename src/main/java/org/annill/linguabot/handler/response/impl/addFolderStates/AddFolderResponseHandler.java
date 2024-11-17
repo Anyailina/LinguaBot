@@ -33,14 +33,14 @@ public class AddFolderResponseHandler implements ResponseHandler {
         if (!RegexPattern.isMessageContainsOnlyLetters(text)) {
             return messageInputNotCorrect;
         }
-        Long userId = user.getId();
+        Long chatId = user.getId();
         FolderDto folderDto = folderService.getFolderByName(text, user.getId());
 
         if (folderDto != null) {
             return messageExists;
         }
         folderService.addFolder(text, user.getId());
-        cache.evict(userId);
+        cache.evict(chatId);
         return AddFolderResponseEnum.ADD_FOLDER.getMessage();
     }
 }

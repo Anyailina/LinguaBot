@@ -1,5 +1,6 @@
 package org.annill.linguabot.commands;
 
+import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.model.telegram.TelegramMessage;
 import org.annill.linguabot.utils.MvcTestUtils;
 import org.junit.jupiter.api.Assertions;
@@ -10,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-public class DefaultCommandTest {
+public class DefaultCommandTest extends AbstractTestContainer {
     @Autowired
     private MvcTestUtils mvcTestUtils;
     @Value("${message.default}")

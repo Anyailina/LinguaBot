@@ -1,7 +1,6 @@
 package org.annill.linguabot.commands;
 
 
-import jakarta.persistence.EntityManager;
 import org.annill.linguabot.container.AbstractTestContainer;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.model.entity.User;
@@ -19,14 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-import java.util.List;
+import java.util.Optional;
 
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:message.yaml")
 public class StartCommandTest extends AbstractTestContainer {
-    @Autowired
-    private EntityManager entityManager;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -44,14 +41,15 @@ public class StartCommandTest extends AbstractTestContainer {
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
+        cache.clear();
     }
 
     @Test
     void startCommandIfUserNotExistTest() throws Exception {
         TelegramMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
 
-        List<User> results = getUserByChatId(mockUpdateFactory.getUserId());
-        Assertions.assertNotNull(results);
+        Optional<User> user = userRepository.findByChatId(mockUpdateFactory.getUserId());
+        Assertions.assertTrue(user.isPresent());
 
         Assertions.assertEquals(startMessage, sendMessage.getText());
     }
@@ -63,16 +61,9 @@ public class StartCommandTest extends AbstractTestContainer {
 
         TelegramMessage sendMessage = mvcTestUtils.getSendMessage(ActionEnum.START.getCommandText());
 
-        List<User> results = getUserByChatId(mockUpdateFactory.getUserId());
-        Assertions.assertEquals(results.size(), 1);
+        Optional<User> user = userRepository.findByChatId(mockUpdateFactory.getUserId());
+        Assertions.assertTrue(user.isPresent());
 
         Assertions.assertEquals(sendMessage.getText(), userRegisteredMessage);
     }
-
-    private List<User> getUserByChatId(Long userId) {
-        return entityManager.createQuery("select u from User u where u.chatId = :userId", User.class)
-                .setParameter("userId", userId)
-                .getResultList();
-    }
-
 }

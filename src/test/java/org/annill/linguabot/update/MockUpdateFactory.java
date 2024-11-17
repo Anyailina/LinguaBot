@@ -23,7 +23,6 @@ public class MockUpdateFactory {
         this.objectMapper = objectMapper;
     }
 
-
     public Update createMockUpdate(String messageText) {
         Update update = mock(Update.class);
         Message message = mock(Message.class);

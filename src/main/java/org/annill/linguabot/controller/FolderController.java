@@ -20,6 +20,6 @@ public class FolderController {
     @GetMapping("/user")
     public ResponseEntity<List<FolderDto>> getFolderByUserId(@RequestParam("id") Long id) {
         List<FolderDto> folders = folderService.getFolders(id);
-        return folders.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(folders);
+        return ResponseEntity.ok(folders);
     }
 }

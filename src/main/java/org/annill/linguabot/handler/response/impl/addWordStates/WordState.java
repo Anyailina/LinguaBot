@@ -43,29 +43,29 @@ public class WordState implements ResponseHandler {
         if (!RegexPattern.isMessageContainsOnlyLetters(word)) {
             return messageInputNotCorrect;
         }
-        Long userId = user.getId();
-        Long folderId = getCurrentFolderId(userId);
+        Long chatId = user.getId();
+        Long folderId = getCurrentFolderId(chatId);
 
-        List<WordSuggestionDto> suggestions = getFilteredSuggestions(word, folderId, userId);
+        List<WordSuggestionDto> suggestions = getFilteredSuggestions(word, folderId, chatId);
 
         String responseMessage = suggestions.isEmpty()
                 ? AddWordResponseEnum.WORD.getMessage()
                 : createSuggestionMessage(suggestions);
 
-        cache.put(userId, createSessionCache(folderId, word, suggestions));
+        cache.put(chatId, createSessionCache(folderId, word, suggestions));
 
         return responseMessage;
     }
 
-    private Long getCurrentFolderId(Long userId) {
-        return Optional.ofNullable(cache.get(userId, SessionCache.class))
+    private Long getCurrentFolderId(Long chatId) {
+        return Optional.ofNullable(cache.get(chatId, SessionCache.class))
                 .map(SessionCache::getCurrentFolderId)
                 .orElse(null);
     }
 
-    private List<WordSuggestionDto> getFilteredSuggestions(String word, Long folderId, Long userId) {
+    private List<WordSuggestionDto> getFilteredSuggestions(String word, Long folderId, Long chatId) {
         List<WordSuggestionDto> suggestions = new ArrayList<>(wordSuggestionService.getWords(word));
-        List<WordSuggestionDto> savedSuggestions = mapToSuggestionDto(wordService.getWords(folderId, word, userId));
+        List<WordSuggestionDto> savedSuggestions = mapToSuggestionDto(wordService.getWords(folderId, word, chatId));
         suggestions.removeAll(savedSuggestions);
         return suggestions;
     }

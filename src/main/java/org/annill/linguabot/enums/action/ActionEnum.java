@@ -12,6 +12,8 @@ public enum ActionEnum {
     ADD_WORD("/add_word"),
     START("/start"),
     REPEAT_WORDS("/repeat_words"),
+    NEXT_PAGE("nextPage"),
+    PREVIOUS_PAGE("previousPage"),
     PROCESS_REPLY("");
 
     private static HashMap<String, ActionEnum> map = new HashMap<>();

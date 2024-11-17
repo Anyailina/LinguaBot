@@ -37,18 +37,18 @@ public class AddWordState implements ResponseHandler {
         if (!RegexPattern.isMessageContainsOnlyLetters(translation)) {
             return messageInputNotCorrect;
         }
-        Long userId = user.getId();
-        SessionCache sessionCache = cache.get(userId, SessionCache.class);
+        Long chatId = user.getId();
+        SessionCache sessionCache = cache.get(chatId, SessionCache.class);
         Long folderIds = Objects.requireNonNull(sessionCache).getCurrentFolderId();
         String word = sessionCache.getWord();
 
-        if (wordService.existsSameWord(folderIds, word, translation, userId)) {
+        if (wordService.existsSameWord(folderIds, word, translation, chatId)) {
             return messageTranslationExists;
         }
 
-        wordService.addWord(folderIds, word, translation, userId);
+        wordService.addWord(folderIds, word, translation, chatId);
         kafkaWordSuggestionProducer.sendMessage(word, translation);
-        cache.evict(userId);
+        cache.evict(chatId);
 
         return AddWordResponseEnum.TRANSLATION.getMessage();
     }

@@ -1,42 +1,46 @@
-package org.annill.linguabot.ui;
+package org.annill.linguabot.handler.action.abs;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.annill.linguabot.enums.PageEnum;
+import org.annill.linguabot.handler.action.ActionHandler;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.service.FolderService;
+import org.annill.linguabot.ui.FolderInlineKeyBoard;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.MaybeInaccessibleMessage;
 
 import java.util.Objects;
 
-@Component
-@Getter
 @AllArgsConstructor
-public class FolderNavigationHandler {
+public abstract class FolderNavigationActionHandler implements ActionHandler {
     private final Cache cache;
     private final FolderInlineKeyBoard folderInlineKeyBoard;
     private final FolderService folderService;
     @Value("${folder.select}")
     private String folderSelect;
 
-    public EditMessageText changePage(CallbackQuery callbackQuery) {
+    protected EditMessageText changePage(PageEnum pageEnum, CallbackQuery callbackQuery) {
         Long chatId = callbackQuery.getMessage().getChatId();
         SessionCache sessionCache = Objects.requireNonNull(cache.get(chatId, SessionCache.class));
 
         int currentPage = sessionCache.getCurrentPage();
         int totalPages = folderInlineKeyBoard.getPageSize();
-        String callbackData = callbackQuery.getData();
 
-        currentPage = callbackData.equals(PageEnum.NEXT_PAGE.getMessage()) ?
-                (currentPage + 1) % totalPages :
-                (currentPage - 1 + totalPages) % totalPages;
+        switch (pageEnum) {
+            case NEXT_PAGE:
+                currentPage = (currentPage + 1) % totalPages;
+                break;
+            case PREVIOUS_PAGE:
+                currentPage = (currentPage - 1 + totalPages) % totalPages;
+                break;
+            default:
+                break;
+        }
 
         sessionCache.setCurrentPage(currentPage);
         cache.put(chatId, sessionCache);
