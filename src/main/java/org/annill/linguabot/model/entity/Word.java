@@ -31,6 +31,7 @@ public class Word {
     @Column(name = "create_at")
     private LocalDateTime createdAt;
     @Column(name = "update_at")
+    //TODO: @UpdateTimestamp
     private LocalDateTime updateAt;
     @ManyToOne
     @JoinColumn(name = "folder_id")

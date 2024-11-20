@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+//TODO use chain setters
 @Accessors(chain = true)
 public class SessionCache {
     private ResponseEnum response;
@@ -24,7 +25,6 @@ public class SessionCache {
         this.response = response;
         this.currentFolderId = currentFolderId;
     }
-
 
     public SessionCache(ResponseEnum response, Long currentFolderId, String word) {
         this.response = response;

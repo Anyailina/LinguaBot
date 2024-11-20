@@ -19,6 +19,7 @@ public class UserService {
     public UserDto getUserIdByChatId(Long chatId) {
         return userRepository.findByChatId(chatId)
                 .map(userConvertor::convert)
+//                TODO: make optional
                 .orElse(null);
     }
 
@@ -26,10 +27,12 @@ public class UserService {
     public UserDto addUser(org.telegram.telegrambots.meta.api.objects.User userFromTelegram) {
         long idUserFromTelegram = userFromTelegram.getId();
 
+//                TODO: make optional
         if (userRepository.findByChatId(idUserFromTelegram).isEmpty()) {
             User user = new User(idUserFromTelegram, userFromTelegram.getFirstName(), userFromTelegram.getUserName());
             return userConvertor.convert(userRepository.save(user));
         }
+
         return null;
     }
 }

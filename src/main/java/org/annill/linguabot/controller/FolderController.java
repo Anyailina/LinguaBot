@@ -17,6 +17,7 @@ import java.util.List;
 public class FolderController {
     private final FolderService folderService;
 
+    //TODO: do path param {id}
     @GetMapping("/user")
     public ResponseEntity<List<FolderDto>> getFolderByUserId(@RequestParam("id") Long id) {
         List<FolderDto> folders = folderService.getFolders(id);

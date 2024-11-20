@@ -21,6 +21,7 @@ public class AddWordState implements ResponseHandler {
     private final KafkaWordSuggestionProducer kafkaWordSuggestionProducer;
     private final WordService wordService;
     private final Cache cache;
+    //TODO create configuration properties
     @Value("${message.mistake.translate-exists}")
     private String messageTranslationExists;
     @Value("${message.not_correct-input}")
