@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @ConfigurationProperties(prefix = "repeat")
@@ -16,14 +15,13 @@ import java.util.List;
 @Setter
 public class RepeatWordService {
     @Value("${quantity-repeat}")
-    private Integer quantityRepeat;
+    private int quantityRepeat;
     private List<Integer> times;
 
 
     public Word updateRepeatWord(Word word, Integer wordDtoQuantityRepeat) {
-        int maxAllowedQuantityRepeat = quantityRepeat;
-        if (wordDtoQuantityRepeat != null && maxAllowedQuantityRepeat <= wordDtoQuantityRepeat) {
-            wordDtoQuantityRepeat = maxAllowedQuantityRepeat;
+        if (wordDtoQuantityRepeat != null && quantityRepeat <= wordDtoQuantityRepeat) {
+            wordDtoQuantityRepeat = quantityRepeat;
             word.setIsLearned(true);
         }
         word.setQuantityRepeat(wordDtoQuantityRepeat);
@@ -31,44 +29,10 @@ public class RepeatWordService {
     }
 
     public List<Word> checkIfNeedRepeat(List<Word> words) {
-        List<Word> wordsRepeat = new ArrayList<>();
-        for (Word word : words) {
-            LocalDateTime lastUpdate = word.getUpdateAt();
-            switch (word.getQuantityRepeat()) {
-                case 1:
-                    if (Duration.between(lastUpdate, LocalDateTime.now()).toMinutes() >= times.get(0)) {
-                        wordsRepeat.add(word);
-                    }
-                    break;
-
-                case 2:
-                    if (Duration.between(lastUpdate, LocalDateTime.now()).toHours() >= times.get(1)) {
-                        wordsRepeat.add(word);
-                    }
-                    break;
-
-                case 3:
-                    if (Duration.between(lastUpdate, LocalDateTime.now()).toDays() > times.get(2)) {
-                        wordsRepeat.add(word);
-                    }
-                    break;
-
-                case 4:
-                    if (Duration.between(lastUpdate, LocalDateTime.now()).toDays() > times.get(3)) {
-                        wordsRepeat.add(word);
-                    }
-                    break;
-
-                case 5:
-                    if (Duration.between(lastUpdate, LocalDateTime.now()).toDays() > times.get(4)) {
-                        wordsRepeat.add(word);
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        return wordsRepeat;
+        LocalDateTime now = LocalDateTime.now();
+        return words.stream()
+                .filter(word -> word.getQuantityRepeat() != 0)
+                .filter(word -> Duration.between(word.getUpdateAt(), now).toMinutes() >= times.get(word.getQuantityRepeat() - 1))
+                .toList();
     }
 }

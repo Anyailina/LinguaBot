@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -27,8 +28,10 @@ public class Folder {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @CreationTimestamp
     @Column(name = "create_at")
     private Date createdAt;
+    @UpdateTimestamp
     @Column(name = "update_at")
     private Date updateAt;
     @OneToMany(mappedBy = "folder", fetch = FetchType.EAGER)
@@ -44,7 +47,5 @@ public class Folder {
     public Folder(String name, User user) {
         this.name = name;
         this.user = user;
-        this.createdAt = Date.valueOf(LocalDate.now());
-        this.updateAt = Date.valueOf(LocalDate.now());
     }
 }

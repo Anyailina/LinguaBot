@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
-import org.annill.linguabot.kafka.KafkaWordSuggestionProducer;
+import org.annill.linguabot.kafka.producer.KafkaAddedWordProducer;
+import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.pattern.RegexPattern;
@@ -20,16 +21,10 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class AddWordWithSuggestionState implements ResponseHandler {
-    private final KafkaWordSuggestionProducer kafkaWordSuggestionProducer;
+    private final KafkaAddedWordProducer kafkaAddedWordProducer;
     private final WordService wordService;
     private final Cache cache;
-    @Value("${message.mistake.incorrect-number}")
-    private String messageIncorrectNumber;
-    @Value("${message.mistake.translate-exists}")
-    private String messageTranslationExists;
-    @Value("${message.not_correct-input-with-numbers}")
-    private String messageIncorrectInput;
-
+    private final Message message;
     @Override
     public ResponseEnum getType() {
         return AddWordResponseEnum.SUGGEST_TRANSLATION;
@@ -37,7 +32,7 @@ public class AddWordWithSuggestionState implements ResponseHandler {
 
     public String process(String translation, User user) {
         if (!RegexPattern.isMessageContainsLettersAndNumbers(translation)) {
-            return messageIncorrectInput;
+            return message.getNotCorrectInputWithNumbers();
         }
         Long chatId = user.getId();
         SessionCache sessionCache = getSessionCache(chatId);
@@ -49,7 +44,7 @@ public class AddWordWithSuggestionState implements ResponseHandler {
             int suggestionIndex = Integer.parseInt(translation);
 
             if (isInvalidSuggestionIndex(suggestionIndex, suggestions.size())) {
-                return messageIncorrectNumber;
+                return message.getIncorrectNumber();
             }
 
             WordSuggestionDto chosenSuggestion = suggestions.get(suggestionIndex - 1);
@@ -60,10 +55,10 @@ public class AddWordWithSuggestionState implements ResponseHandler {
         }
 
         if (wordService.existsSameWord(folderIds, word, translation, chatId)) {
-            return messageTranslationExists;
+            return message.getTranslateExists();
         }
 
-        kafkaWordSuggestionProducer.sendMessage(sessionCache.getWord(), translation);
+        kafkaAddedWordProducer.sendMessageAddedWord(sessionCache.getWord(), translation);
         addWordToService(folderIds, sessionCache.getWord(), translation, chatId);
         cache.evict(user.getId());
 

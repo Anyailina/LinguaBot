@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -26,27 +27,28 @@ public class FolderService {
     private final UserConvertor userConvertor;
     private final UserService userService;
 
-    public FolderDto addFolder(String name, Long userChatId) {
-        if (getFolderByName(name, userChatId) != null) {
-            return null;
+    public void addFolder(String name, Long userChatId) {
+        if (getFolderByName(name, userChatId).isPresent()) {
+            return;
         }
 
-        UserDto userDto = userService.getUserIdByChatId(userChatId);
-        User user = userConvertor.convert(userDto);
+        Optional<UserDto> userDto = userService.getUserIdByChatId(userChatId);
+
+        if(userDto.isEmpty()){
+            return ;
+        }
+
+        User user = userConvertor.convert(userDto.get());
         Folder folder = new Folder(name, user);
         Folder savedFolder = folderRepository.save(folder);
-        return folderConverter.convert(savedFolder);
+        folderConverter.convert(savedFolder);
     }
 
 
-    public void deleteFolder(Long id) {
-        folderRepository.deleteById(id);
-    }
 
-    public FolderDto getFolderByName(String name, Long userId) {
+    public Optional<FolderDto> getFolderByName(String name, Long userId) {
         return folderRepository.findByNameAndUserChatId(name, userId)
-                .map(folderConverter::convert)
-                .orElse(null);
+                .map(folderConverter::convert);
     }
 
     public Page<FolderDto> getPageFolderByUserChatId(Long userId, int pageNumber, int pageSize) {
@@ -61,10 +63,9 @@ public class FolderService {
 
     }
 
-    public FolderDto getFolderByUserChatId(Long folderId, Long chatId) {
+    public Optional<FolderDto> getFolderByUserChatId(Long folderId, Long chatId) {
         return folderRepository.findByIdAndUserChatId(folderId, chatId)
-                .map(folderConverter::convert)
-                .orElse(null);
+                .map(folderConverter::convert);
     }
 
     public List<FolderDto> getFolders(Long userId) {

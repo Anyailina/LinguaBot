@@ -121,8 +121,9 @@ public class AddWordCommandTest extends AbstractTestContainer {
         wordActionTest.equalsAssertion(folderName, wordsMessageUtils.getMessageSendWord());
 
         wordActionTest.equalsAssertion(wordsMessageUtils.getWord(), wordsMessageUtils.getMessageSendTranslation());
-        FolderDto folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
-        wordService.addWord(folderDto.getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
+        Optional<FolderDto> folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
+
+        wordService.addWord(folderDto.get().getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
         wordActionTest.equalsAssertion(wordsMessageUtils.getTranslation(), wordsMessageUtils.getMessageTranslationExists());
     }

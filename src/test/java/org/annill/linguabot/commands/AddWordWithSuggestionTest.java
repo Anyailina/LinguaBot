@@ -89,9 +89,9 @@ public class AddWordWithSuggestionTest extends AbstractTestContainer {
     void addWordExists() throws Exception {
         performAddWord();
         String folderName = wordsMessageUtils.getNameFolder();
-        FolderDto folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
+        Optional<FolderDto> folderDto = folderService.getFolderByName(folderName, mockUpdateFactory.getUserId());
 
-        wordService.addWord(folderDto.getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
+        wordService.addWord(folderDto.get().getId(), wordsMessageUtils.getWord(), wordsMessageUtils.getTranslation(), mockUpdateFactory.getUserId());
 
         TelegramMessage telegramMessage = mvcTestUtils.getSendMessage(wordsMessageUtils.getTranslation());
 

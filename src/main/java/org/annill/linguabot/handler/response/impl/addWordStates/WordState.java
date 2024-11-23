@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
+import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.WordDto;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
 import org.annill.linguabot.service.WordSuggestionService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -27,10 +27,7 @@ public class WordState implements ResponseHandler {
     private final WordService wordService;
     private final WordSuggestionService wordSuggestionService;
     private final Cache cache;
-    @Value("${message.mistake.word-suggestion-exists}")
-    private String messageWordSuggestionExists;
-    @Value("${message.not_correct-input}")
-    private String messageInputNotCorrect;
+    private final Message message;
 
 
     @Override
@@ -41,26 +38,28 @@ public class WordState implements ResponseHandler {
     @Override
     public String process(String word, User user) {
         if (!RegexPattern.isMessageContainsOnlyLetters(word)) {
-            return messageInputNotCorrect;
+            return message.getWordSuggestionExists();
         }
         Long chatId = user.getId();
-        Long folderId = getCurrentFolderId(chatId);
+        Optional<Long> folderId = getCurrentFolderId(chatId);
+        if(folderId.isEmpty()){
+            return message.getFolderNotExists();
+        }
 
-        List<WordSuggestionDto> suggestions = getFilteredSuggestions(word, folderId, chatId);
+        List<WordSuggestionDto> suggestions = getFilteredSuggestions(word, folderId.get(), chatId);
 
         String responseMessage = suggestions.isEmpty()
                 ? AddWordResponseEnum.WORD.getMessage()
                 : createSuggestionMessage(suggestions);
 
-        cache.put(chatId, createSessionCache(folderId, word, suggestions));
+        cache.put(chatId, createSessionCache(folderId.get(), word, suggestions));
 
         return responseMessage;
     }
 
-    private Long getCurrentFolderId(Long chatId) {
+    private Optional<Long> getCurrentFolderId(Long chatId) {
         return Optional.ofNullable(cache.get(chatId, SessionCache.class))
-                .map(SessionCache::getCurrentFolderId)
-                .orElse(null);
+                .map(SessionCache::getCurrentFolderId);
     }
 
     private List<WordSuggestionDto> getFilteredSuggestions(String word, Long folderId, Long chatId) {
@@ -78,12 +77,19 @@ public class WordState implements ResponseHandler {
 
     private SessionCache createSessionCache(Long folderId, String word, List<WordSuggestionDto> suggestions) {
         return suggestions.isEmpty()
-                ? new SessionCache(AddWordResponseEnum.TRANSLATION, folderId, word)
-                : new SessionCache(AddWordResponseEnum.SUGGEST_TRANSLATION, folderId, word, suggestions);
+                ? new SessionCache()
+                .setResponse(AddWordResponseEnum.WORD)
+                .setCurrentFolderId(folderId)
+                .setWord(word)
+                : new SessionCache()
+                .setResponse(AddWordResponseEnum.WORD)
+                .setCurrentFolderId(folderId)
+                .setWord(word)
+                .setWordSuggestions(suggestions);
     }
 
     private String createSuggestionMessage(List<WordSuggestionDto> suggestions) {
-        StringBuilder answer = new StringBuilder(messageWordSuggestionExists).append("\n");
+        StringBuilder answer = new StringBuilder(message.getWordSuggestionExists()).append("\n");
         for (int i = 0; i < suggestions.size(); i++) {
             answer.append(i + 1).append(". ").append(suggestions.get(i).getTranslation()).append("\n");
         }

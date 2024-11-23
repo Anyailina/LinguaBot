@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -25,8 +26,10 @@ public class User {
     private Long id;
     @Column(name = "chat_id")
     private Long chatId;
+    @CreationTimestamp
     @Column(name = "create_at")
     private Date createdAt;
+    @UpdateTimestamp
     @Column(name = "update_at")
     private Date updateAt;
     @Column(name = "first_name")
@@ -48,8 +51,6 @@ public class User {
 
     public User(Long id, String firstName, String userName) {
         this.chatId = id;
-        this.createdAt = Date.valueOf(LocalDate.now());
-        this.updateAt = Date.valueOf(LocalDate.now());
         this.firstName = firstName;
         this.userName = userName;
     }

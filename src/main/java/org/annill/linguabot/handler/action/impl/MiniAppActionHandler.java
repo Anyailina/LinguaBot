@@ -3,6 +3,7 @@ package org.annill.linguabot.handler.action.impl;
 import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.action.ActionEnum;
 import org.annill.linguabot.handler.action.ActionHandler;
+import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.dto.UserDto;
 import org.annill.linguabot.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,17 +16,16 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
 public class MiniAppActionHandler implements ActionHandler {
     private final UserService userService;
-    @Value("${message.open-miniapp}")
-    private String openMiniAppString;
-    @Value("${message.button-open-miniapp}")
-    private String buttonOpenMiniAppString;
+    private final Message message;
     @Value("${http.mini-app}")
     private String httpMiniApp;
+    private Message message;
 
 
     @Override
@@ -38,24 +38,28 @@ public class MiniAppActionHandler implements ActionHandler {
         Long chatId = update.getMessage().getFrom().getId();
         InlineKeyboardMarkup inlineKeyboard = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
-        UserDto userDto = userService.getUserIdByChatId(chatId);
+        Optional<UserDto> userDto = userService.getUserIdByChatId(chatId);
+
+        if(userDto.isEmpty()){
+            return null;
+        }
 
         List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText(openMiniAppString);
-        button.setUrl(httpMiniApp + userDto.getId());
+        button.setText(message.getOpenMiniapp());
+        button.setUrl(httpMiniApp + userDto.get().getId());
 
         row.add(button);
         rows.add(row);
         inlineKeyboard.setKeyboard(rows);
 
-        return createMessage(userDto, inlineKeyboard);
+        return createMessage(userDto.get(), inlineKeyboard);
     }
 
     private SendMessage createMessage(UserDto userDto, InlineKeyboardMarkup inlineKeyboard) {
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(userDto.getChatId());
-        sendMessage.setText(buttonOpenMiniAppString);
+        sendMessage.setText(message.getButtonOpenMiniapp());
         sendMessage.setReplyMarkup(inlineKeyboard);
         return sendMessage;
     }

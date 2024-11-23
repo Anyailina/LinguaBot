@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
-import org.annill.linguabot.kafka.KafkaWordSuggestionProducer;
+import org.annill.linguabot.kafka.producer.KafkaAddedWordProducer;
+import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
@@ -18,14 +19,10 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class AddWordState implements ResponseHandler {
-    private final KafkaWordSuggestionProducer kafkaWordSuggestionProducer;
+    private final KafkaAddedWordProducer kafkaAddedWordProducer;
     private final WordService wordService;
     private final Cache cache;
-    @Value("${message.mistake.translate-exists}")
-    private String messageTranslationExists;
-    @Value("${message.not_correct-input}")
-    private String messageInputNotCorrect;
-
+    private final Message message;
 
     @Override
     public ResponseEnum getType() {
@@ -35,7 +32,7 @@ public class AddWordState implements ResponseHandler {
     @Override
     public String process(String translation, User user) {
         if (!RegexPattern.isMessageContainsOnlyLetters(translation)) {
-            return messageInputNotCorrect;
+            return message.getNotCorrectInput();
         }
         Long chatId = user.getId();
         SessionCache sessionCache = cache.get(chatId, SessionCache.class);
@@ -43,11 +40,11 @@ public class AddWordState implements ResponseHandler {
         String word = sessionCache.getWord();
 
         if (wordService.existsSameWord(folderIds, word, translation, chatId)) {
-            return messageTranslationExists;
+            return message.getTranslateExists();
         }
 
         wordService.addWord(folderIds, word, translation, chatId);
-        kafkaWordSuggestionProducer.sendMessage(word, translation);
+        kafkaAddedWordProducer.sendMessageAddedWord(word, translation);
         cache.evict(chatId);
 
         return AddWordResponseEnum.TRANSLATION.getMessage();

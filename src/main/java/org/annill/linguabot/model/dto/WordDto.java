@@ -20,5 +20,6 @@ public class WordDto {
     private String translation;
     private Boolean isLearned;
     private Integer quantityRepeat;
+    private Boolean isSelected;
     private FolderDto folderDto;
 }

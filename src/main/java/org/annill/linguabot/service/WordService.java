@@ -11,7 +11,6 @@ import org.annill.linguabot.repository.WordRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,12 +29,12 @@ public class WordService {
 
 
     public void addWord(Long folderId, String phrase, String translation, Long chatId) {
-        FolderDto folderDto = folderService.getFolderByUserChatId(folderId, chatId);
-        if (folderDto == null && !existsSameWord(folderId, phrase, translation, chatId)) {
+        Optional<FolderDto> folderDto = folderService.getFolderByUserChatId(folderId, chatId);
+        if (folderDto.isEmpty() && !existsSameWord(folderId, phrase, translation, chatId)) {
             return;
         }
-        Folder folder = folderConverter.convert(folderDto);
-        Word word = new Word(phrase, translation, false, 0, folder);
+        Folder folder = folderConverter.convert(folderDto.get());
+        Word word = new Word(phrase, translation, false, 0, false, folder);
         wordRepository.save(word);
     }
 
@@ -56,9 +55,18 @@ public class WordService {
                 .toList();
     }
 
+
     public List<WordDto> getNewWords(List<Long> folderIdList, Long userId) {
+        List<Word> optionalWord = wordRepository.findByIsLearnedAndQuantityRepeatAndIsSelectedAndFolderIdInAndFolderUserId(
+                false, 0, false, folderIdList, userId
+        );
+        List<WordDto> wordDtoList = optionalWord.stream().map(word -> {
+            word.setIsSelected(true);
+            wordRepository.save(word);
+            return wordConverter.convert(word);
+        }).toList();
+
         int quantityWords = Integer.parseInt(quantityNewWord);
-        List<WordDto> wordDtoList = getWordsByLearnedByFolderList(false, 0, folderIdList, userId, quantityWords);
         if (quantityWords >= wordDtoList.size()) {
             return wordDtoList;
         }
@@ -75,21 +83,19 @@ public class WordService {
     }
 
     public Boolean existsSameWord(Long folderId, String phrase, String translation, Long chatId) {
-        FolderDto folderDto = folderService.getFolderByUserChatId(folderId, chatId);
-        Folder folder = folderConverter.convert(folderDto);
+        Optional<FolderDto> folderDto = folderService.getFolderByUserChatId(folderId, chatId);
+        if(folderDto.isEmpty()){
+            return null;
+        }
+        Folder folder = folderConverter.convert(folderDto.get());
         Optional<Word> word = wordRepository.findFirstByNameAndFolderAndTranslation(phrase, folder, translation);
         return word.isPresent();
     }
 
-    private List<WordDto> getWordsByLearnedByFolderList(Boolean isLearned, Integer quantityRepeat, List<Long> folderIdList, Long userId, int quantityWords) {
-        return wordRepository.findByIsLearnedAndQuantityRepeatAndFolderIdInAndFolderUserId(isLearned, quantityRepeat, folderIdList, userId).stream()
-                .map(wordConverter::convert)
-                .toList();
-    }
 
     private Word updateWord(Word updateWord, WordDto wordDto) {
         updateWord.setIsLearned(wordDto.getIsLearned());
-        updateWord.setUpdateAt(LocalDateTime.now());
+        updateWord.setIsSelected(false);
         updateWord = repeatWordService.updateRepeatWord(updateWord, wordDto.getQuantityRepeat());
         return updateWord;
     }

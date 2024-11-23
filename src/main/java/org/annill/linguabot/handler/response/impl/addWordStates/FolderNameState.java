@@ -13,6 +13,8 @@ import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class FolderNameState implements ResponseHandler {
@@ -34,11 +36,14 @@ public class FolderNameState implements ResponseHandler {
             return messageInputNotCorrect;
         }
         Long userId = user.getId();
-        FolderDto folderDto = folderService.getFolderByName(folderName, userId);
-        if (folderDto == null) {
+        Optional<FolderDto> folderDto = folderService.getFolderByName(folderName, userId);
+        if (folderDto.isEmpty()) {
             return messageFolderNotExists;
         }
-        SessionCache newSessionCache = new SessionCache(AddWordResponseEnum.WORD, folderDto.getId());
+        SessionCache newSessionCache = new SessionCache();
+        newSessionCache
+                .setResponse(AddWordResponseEnum.WORD)
+                .setCurrentFolderId(folderDto.get().getId());
         cache.put(userId, newSessionCache);
 
         return AddWordResponseEnum.NAME_FOLDER.getMessage();

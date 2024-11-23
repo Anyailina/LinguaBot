@@ -19,23 +19,4 @@ public class SessionCache {
     private String word;
     private List<WordSuggestionDto> wordSuggestions;
     private int currentPage;
-
-    public SessionCache(ResponseEnum response, Long currentFolderId) {
-        this.response = response;
-        this.currentFolderId = currentFolderId;
-    }
-
-
-    public SessionCache(ResponseEnum response, Long currentFolderId, String word) {
-        this.response = response;
-        this.currentFolderId = currentFolderId;
-        this.word = word;
-    }
-
-    public SessionCache(ResponseEnum response, Long currentFolderId, String word, List<WordSuggestionDto> wordSuggestions) {
-        this.response = response;
-        this.currentFolderId = currentFolderId;
-        this.word = word;
-        this.wordSuggestions = wordSuggestions;
-    }
 }

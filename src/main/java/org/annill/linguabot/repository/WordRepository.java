@@ -15,9 +15,10 @@ public interface WordRepository extends JpaRepository<Word, Long> {
     @Query("SELECT w FROM Word w WHERE  w.name = :name AND w.folder.id = :folderId AND w.folder.user.chatId = :chatId")
     List<Word> findWordsByNameFolderIdAndUserChatId(@Param("name") String name, @Param("folderId") Long folderId, @Param("chatId") Long chatId);
 
-    List<Word> findByIsLearnedAndQuantityRepeatAndFolderIdInAndFolderUserId(
+    List<Word> findByIsLearnedAndQuantityRepeatAndIsSelectedAndFolderIdInAndFolderUserId(
             Boolean isLearned,
             Integer quantityRepeat,
+            Boolean isSelected,
             List<Long> folderIds,
             Long userId
     );

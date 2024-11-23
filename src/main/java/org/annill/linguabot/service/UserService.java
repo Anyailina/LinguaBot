@@ -9,6 +9,9 @@ import org.annill.linguabot.repository.UserRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @Slf4j
@@ -16,10 +19,15 @@ public class UserService {
     private UserRepository userRepository;
     private UserConvertor userConvertor;
 
-    public UserDto getUserIdByChatId(Long chatId) {
+    public Optional<UserDto> getUserIdByChatId(Long chatId) {
         return userRepository.findByChatId(chatId)
+                .map(userConvertor::convert);
+    }
+
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
                 .map(userConvertor::convert)
-                .orElse(null);
+                .toList();
     }
 
     @Modifying
