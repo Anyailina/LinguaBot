@@ -14,7 +14,4 @@ public class WordConverter {
         return new WordDto(word.getId(), word.getName(), word.getTranslation(), word.getIsLearned(), word.getQuantityRepeat(), word.getIsSelected(), folderConverter.convert(word.getFolder()));
     }
 
-    public Word convert(WordDto wordDto) {
-        return new Word(wordDto.getId(), wordDto.getName(), wordDto.getTranslation(), wordDto.getIsLearned(), wordDto.getQuantityRepeat(), wordDto.getIsSelected(), folderConverter.convert(wordDto.getFolderDto()));
-    }
 }

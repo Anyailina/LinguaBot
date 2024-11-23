@@ -25,7 +25,6 @@ public class MiniAppActionHandler implements ActionHandler {
     private final Message message;
     @Value("${http.mini-app}")
     private String httpMiniApp;
-    private Message message;
 
 
     @Override
@@ -40,7 +39,7 @@ public class MiniAppActionHandler implements ActionHandler {
         List<List<InlineKeyboardButton>> rows = new ArrayList<>();
         Optional<UserDto> userDto = userService.getUserIdByChatId(chatId);
 
-        if(userDto.isEmpty()){
+        if (userDto.isEmpty()) {
             return null;
         }
 

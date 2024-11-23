@@ -9,7 +9,6 @@ import org.annill.linguabot.model.dto.WordDto;
 import org.annill.linguabot.service.FolderService;
 import org.annill.linguabot.service.UserService;
 import org.annill.linguabot.service.WordService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
