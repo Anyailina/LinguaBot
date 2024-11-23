@@ -34,8 +34,8 @@ public class FolderService {
 
         Optional<UserDto> userDto = userService.getUserIdByChatId(userChatId);
 
-        if(userDto.isEmpty()){
-            return ;
+        if (userDto.isEmpty()) {
+            return;
         }
 
         User user = userConvertor.convert(userDto.get());
@@ -43,7 +43,6 @@ public class FolderService {
         Folder savedFolder = folderRepository.save(folder);
         folderConverter.convert(savedFolder);
     }
-
 
 
     public Optional<FolderDto> getFolderByName(String name, Long userId) {

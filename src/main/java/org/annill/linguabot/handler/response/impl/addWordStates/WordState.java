@@ -42,7 +42,7 @@ public class WordState implements ResponseHandler {
         }
         Long chatId = user.getId();
         Optional<Long> folderId = getCurrentFolderId(chatId);
-        if(folderId.isEmpty()){
+        if (folderId.isEmpty()) {
             return message.getFolderNotExists();
         }
 

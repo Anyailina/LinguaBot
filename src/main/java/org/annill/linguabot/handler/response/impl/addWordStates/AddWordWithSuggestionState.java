@@ -10,7 +10,6 @@ import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.WordSuggestionDto;
 import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.WordService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
@@ -25,6 +24,7 @@ public class AddWordWithSuggestionState implements ResponseHandler {
     private final WordService wordService;
     private final Cache cache;
     private final Message message;
+
     @Override
     public ResponseEnum getType() {
         return AddWordResponseEnum.SUGGEST_TRANSLATION;

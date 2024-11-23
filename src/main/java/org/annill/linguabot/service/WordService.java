@@ -84,7 +84,7 @@ public class WordService {
 
     public Boolean existsSameWord(Long folderId, String phrase, String translation, Long chatId) {
         Optional<FolderDto> folderDto = folderService.getFolderByUserChatId(folderId, chatId);
-        if(folderDto.isEmpty()){
+        if (folderDto.isEmpty()) {
             return null;
         }
         Folder folder = folderConverter.convert(folderDto.get());

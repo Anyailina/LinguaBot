@@ -8,7 +8,6 @@ import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.pattern.RegexPattern;
 import org.annill.linguabot.service.FolderService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.User;
