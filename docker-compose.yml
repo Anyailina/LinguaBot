@@ -10,7 +10,7 @@ services:
     ports:
       - '5433:5432'
     networks:
-      - my-network
+      - monitoring
     volumes:
       - postgres-data:/var/lib/postgresql/data
   redis:
@@ -24,35 +24,96 @@ services:
       - redis-data:/data
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
+    image: confluentinc/cp-zookeeper:latest
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
     networks:
-      - my-network
-
+      - monitoring
   kafka:
-    image: confluentinc/cp-kafka:7.4.0
+    image: confluentinc/cp-kafka:latest
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      JMX_PORT: 9999
+      KAFKA_JMX_OPTS: "-Dcom.sun.management.jmxremote=true \
+                       -Dcom.sun.management.jmxremote.authenticate=false \
+                       -Dcom.sun.management.jmxremote.ssl=false \
+                       -Dcom.sun.management.jmxremote.rmi.port=9999 \
+                       -Djava.rmi.server.hostname=kafka"
+      KAFKA_OPTS: "-javaagent:resources/kafka/jmx_prometheus_javaagent-1.0.1.jar=1234:resources/kafka/jmx_exporter_config.yml"
     ports:
-      - "9092:9092"
+      - "29092:29092"
+      - "9999:9999"
+      - "1234:1234"
     depends_on:
       - zookeeper
+      - prometheus
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+      - ./src/main/resources/kafka/jmx_exporter_config.yml:/etc/jmx-exporter/jmx_exporter_config.yml
+      - ./src/main/resources/kafka/jmx_prometheus_javaagent-1.0.1.jar:/etc/jmx-exporter/jmx_prometheus_javaagent-1.0.1.jar
     networks:
-      - my-network
+      - monitoring
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./src/main/resources/grafana/provisioning:/etc/grafana/provisioning
+      - ./src/main/resources/grafana/provisioning/dashboards/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+    environment:
+      GF_SECURITY_ADMIN_USER: user
+      GF_SECURITY_ADMIN_PASSWORD: password
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./src/main/resources/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local-kafka
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+    ports:
+      - "9000:8080"
+    depends_on:
+      - kafka
+    networks:
+      - monitoring
+
+  kafka-exporter:
+    image: bitnami/kafka-exporter:latest
+    command: [ "--kafka.server=kafka:9092" ]
+    ports:
+      - "9308:9308"
+    depends_on:
+      - kafka
+    networks:
+      - monitoring
 
 networks:
-  my-network:
+  monitoring:
     driver: bridge
 
 volumes:
+  pg-data: { }
   redis-data:
   postgres-data:
-  kafka-data:
+  kafka-data: { }

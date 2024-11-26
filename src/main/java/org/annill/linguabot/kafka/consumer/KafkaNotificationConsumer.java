@@ -13,7 +13,7 @@ public class KafkaNotificationConsumer {
     private TelegramController telegramController;
 
     @SneakyThrows
-    @KafkaListener(topics = "#{T(org.springframework.beans.factory.annotation.Value).value('${spring.kafka.topics.notification}')}")
+    @KafkaListener(topics = "${spring.kafka.topics.notification}")
     public void listen(SendMessage sendMessage) {
         telegramController.sendMessage(sendMessage);
     }
