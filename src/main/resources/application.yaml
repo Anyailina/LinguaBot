@@ -2,13 +2,6 @@ server:
   port: 8080
 
 spring:
-  web:
-    cors:
-      mappings:
-        "/**":
-          allowed-origins: "https://0358-95-55-28-12.ngrok-free.app"
-          allowed-methods: "GET,POST,PUT,DELETE"
-          allowed-headers: "*"
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5433/linguabot
@@ -39,12 +32,12 @@ spring:
     topics:
       notification: notification
     producer:
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: localhost:29092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       group-id: notification
-      bootstrap-servers: localhost:9092
+      bootstrap-servers: localhost:29092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
@@ -63,8 +56,10 @@ spring:
             url: http://localhost:8081/words
 
 http:
+  id:
+    "?id="
   mini-app:
-    "https://0358-95-55-28-12.ngrok-free.app?id="
+    "https://776e-178-70-97-175.ngrok-free.app"
 errorDetails:
   user-not-found:
     code: "USER_NOT_FOUND"
@@ -108,6 +103,15 @@ repeat:
 quantity-word: 2
 quantity-repeat: 6
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
 
 cache:
   name: commands

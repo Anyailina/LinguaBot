@@ -25,6 +25,8 @@ public class MiniAppActionHandler implements ActionHandler {
     private final Message message;
     @Value("${http.mini-app}")
     private String httpMiniApp;
+    @Value("${http.id}")
+    private String id;
 
 
     @Override
@@ -46,7 +48,7 @@ public class MiniAppActionHandler implements ActionHandler {
         List<InlineKeyboardButton> row = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
         button.setText(message.getOpenMiniapp());
-        button.setUrl(httpMiniApp + userDto.get().getId());
+        button.setUrl(httpMiniApp + id + userDto.get().getId());
 
         row.add(button);
         rows.add(row);

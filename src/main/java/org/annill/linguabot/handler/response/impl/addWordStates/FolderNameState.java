@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.annill.linguabot.enums.response.ResponseEnum;
 import org.annill.linguabot.enums.response.impl.AddWordResponseEnum;
 import org.annill.linguabot.handler.response.ResponseHandler;
+import org.annill.linguabot.model.Message;
 import org.annill.linguabot.model.cache.SessionCache;
 import org.annill.linguabot.model.dto.FolderDto;
 import org.annill.linguabot.pattern.RegexPattern;
@@ -20,10 +21,7 @@ import java.util.Optional;
 public class FolderNameState implements ResponseHandler {
     private final FolderService folderService;
     private final Cache cache;
-    @Value("${message.mistake.folder-not-exists}")
-    private String messageFolderNotExists;
-    @Value("${message.not_correct-input}")
-    private String messageInputNotCorrect;
+    private final Message message;
 
     @Override
     public ResponseEnum getType() {
@@ -33,12 +31,12 @@ public class FolderNameState implements ResponseHandler {
     @Override
     public String process(String folderName, User user) {
         if (!RegexPattern.isMessageContainsOnlyLetters(folderName)) {
-            return messageInputNotCorrect;
+            return message.getNotCorrectInput();
         }
         Long userId = user.getId();
         Optional<FolderDto> folderDto = folderService.getFolderByName(folderName, userId);
         if (folderDto.isEmpty()) {
-            return messageFolderNotExists;
+            return message.getFolderNotExists();
         }
         SessionCache newSessionCache = new SessionCache();
         newSessionCache

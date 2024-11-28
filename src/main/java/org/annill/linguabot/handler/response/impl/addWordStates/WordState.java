@@ -38,7 +38,7 @@ public class WordState implements ResponseHandler {
     @Override
     public String process(String word, User user) {
         if (!RegexPattern.isMessageContainsOnlyLetters(word)) {
-            return message.getWordSuggestionExists();
+            return message.getNotCorrectInput();
         }
         Long chatId = user.getId();
         Optional<Long> folderId = getCurrentFolderId(chatId);
@@ -78,11 +78,11 @@ public class WordState implements ResponseHandler {
     private SessionCache createSessionCache(Long folderId, String word, List<WordSuggestionDto> suggestions) {
         return suggestions.isEmpty()
                 ? new SessionCache()
-                .setResponse(AddWordResponseEnum.WORD)
+                .setResponse(AddWordResponseEnum.TRANSLATION)
                 .setCurrentFolderId(folderId)
                 .setWord(word)
                 : new SessionCache()
-                .setResponse(AddWordResponseEnum.WORD)
+                .setResponse(AddWordResponseEnum.SUGGEST_TRANSLATION)
                 .setCurrentFolderId(folderId)
                 .setWord(word)
                 .setWordSuggestions(suggestions);

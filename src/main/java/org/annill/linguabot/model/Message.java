@@ -18,7 +18,7 @@ public class Message {
     @Value("${message.button-open-miniapp}")
     private String buttonOpenMiniapp;
 
-    @Value("${message.not_correct-input}")
+    @Value("${message.not-correct-input}")
     private String notCorrectInput;
     @Value("${message.default}")
     private String defaultMessage;
